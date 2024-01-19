@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                     <a href="{% url 'salesrcd2' pk=request.user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+ <button class="btn btn-outline-primary text-danger">
+                    {% if totalQ %}
+                        {{totalQ}}
+                    {% else %}
+                        0
+                    {% endif %}                    
+            </button></i></a>&nbsp;&nbsp;
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="container-fluid px-4">
+                                    
+                                    <h1 class="mt-4">Receipts</h1><br>
+                                    {% for product in productList %}
+                                    <a href=""> <button class=" btn btn-outline-secondary">{{product.product.product_name}} | &nbsp;{{product.selling_price}} per {{product.sold_In}}</button></a>
+                                    {% endfor %}
+                                    
+                                    <ol class="breadcrumb mb-4">
+                                        <li class="breadcrumb-item active">Create Receipt </li>
+                                    </ol>
+                                    
+                                    
+                                    <div class="row">
+                                        
+                                            <div class="card bg-primary text-white mb-4">
+                                                <div class="card-body"> 
+                                                
+                                                <form method="POST">
+                                                    {% csrf_token %}
+                                                    {{form.as_p}}
+                                                
+                                                    <button class="btn btn-outline-secondary"> submit </button>
+                                                    
+                                                </form>
+                                                
+                                                                    
+                                                </div>
+                                                
+                                            </div>
+                                        
+                                    </div>
+                                    
+                                    <hr class="bg-danger border-warning">
+                                    
+
+                                </div>
+                            </div>
+                        
+                            <div class="col-2">
+                                <br><br>
+                                    <center>
+                                    
+                                    </center>
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+{% endblock%}

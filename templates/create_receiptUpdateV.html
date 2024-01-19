@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                     <a href="{% url 'salesrcd2' pk=request.user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+ <button class="btn btn-outline-primary text-danger">
+                    {% if totalQ %}
+                        {{totalQ}}
+                    {% else %}
+                        0
+                    {% endif %}                    
+            </button></i></a>&nbsp;&nbsp;
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="container-fluid px-4">
+                                    <h1 class="mt-4">Product Receipt</h1>
+                                    <ol class="breadcrumb mb-4">
+                                        <li class="breadcrumb-item active">Update product Receipts</li>
+                                    </ol>
+                                    <hr class="bg-danger border-warning">
+                                    <div class="row">
+                                        
+                                            <div class="card bg-primary text-white mb-4">
+                                                <div class="card-body "> 
+                                                    {{producto.product.product_name}} | {{producto.product.selling_price}}<br><br>
+                                                    <form method="POST">
+                                                    {% csrf_token %}
+                                                        {{form.as_p}}
+                                                    
+                                
+                                                    
+                                                    <center> <button class="btn btn-outline-secondary text-white"> save </button></center>
+                                                    
+                                                    </form>
+                                                    
+                                                                       
+                                                </div>
+                                            </div>
+                                        
+                                    </div>
+                                    <hr class="bg-danger border-warning">
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <br><br><br><br><br><br><br><br><br><br><br>
+                             <center>
+                                
+                                <p> Amount : <small>{{producto.price}}</small>  </p>
+                                <hr class="bg-danger border-warning">
+                                 
+
+
+                                 
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+{% endblock %}

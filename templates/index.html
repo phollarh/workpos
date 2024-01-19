@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+            {% if totalQ %}
+                <a href="{% url 'salesrcd2' pk=request.user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+                    <button class="btn btn-outline-primary text-danger">
+                        {{totalQ}}       
+                    </button></i>
+                </a>&nbsp;&nbsp;
+            {% else %}
+                <a href="{% url 'create_receipt' user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+                    <button class="btn btn-outline-primary text-danger">
+                        0
+                    </button></i></a>&nbsp;&nbsp;
+            {% endif %}
+                
+                    <div class="container-fluid px-4">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <h1 class="mt-4">Dashboard</h1>
+      
+
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body"><center><h2>{{total_priceIna_forday}}</h2> <small class="muted-text">Gross Sales</small></center></div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                    
+                                        <div class="small text-white"><i> {{current_date}}</i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body"><center><h2>{{total_priceIna_forday}}</h2> <small class="muted-text">Net Sales</small></center></div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        
+                                        <div class="small text-white"><i >{{current_date}}</i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-danger text-white mb-4">
+                                    <div class="card-body"><center><h2>{{total_priceIna_fordayCost}}</h2> <small class="muted-text">Gross Costs</small></center></div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        
+                                        <div class="small text-white"><i>{{current_date}}</i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-success text-white mb-4">
+                                    <div class="card-body"><center><h2>{{Profit}}</h2> <small class="muted-text">Gross Profit</small></center></div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                            
+                                        <div class="small text-white"><i>{{current_date}}</i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <i class="fas fa-chart-bar me-1"></i>
+                                        Average Weekly Sales
+                                    </div>
+                                 <div class="card-body"><canvas id="myChart" width="100%" height="40"></canvas></div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <i class="fas fa-chart-area me-1"></i>
+                                        Average Monthly Sales
+                                    </div>
+                                    <div class="card-body"><canvas id="myChartMonthly" width="100%" height="40"></canvas></div>
+                                </div>
+                            </div>
+                        </div>
+                      
+
+                            <script>
+                        
+                                var labels = {{ labels|safe }};
+                                var data = {{ data|safe }};
+
+                            
+                                var ctx = document.getElementById('myChart').getContext('2d');
+                                var myChart = new Chart(ctx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: labels,
+                                        datasets: [{
+                                            label: 'Sales Data',
+                                            data: data,
+                                            backgroundColor: 'rgba(0, 0, 402, 2 )',
+                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                            borderWidth: 1,
+                                            barThickness: [20, 50, 20]
+                                        }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }
+                                });                            </script>
+
+                            <script>
+                        
+                                var labels_monthly = {{ labels_monthly|safe }};
+                                var data_monthly = {{ data_monthly|safe }};
+
+                            
+                                var ctx = document.getElementById('myChartMonthly').getContext('2d');
+                                var myChartMonthly = new Chart(ctx, {
+                                    type: 'line',
+                                    data: {
+                                        labels: labels_monthly,
+                                        datasets: [{
+                                            label: 'Monthly Sales Data',
+                                            data: data_monthly,
+                                            backgroundColor: 'rgba(0, 0, 402, 2 )',
+                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                            borderWidth: 1,
+                                            
+                                        }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }
+                                });
+                            </script>
+
+
+                        
+                    </div>
+            
+                </main>
+{% endblock %}
+ 

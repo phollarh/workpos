@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="container-fluid px-4">
+                                    
+                                    <h1 class="mt-4">Category Information</h1><br> 
+                                    
+                                    {% for category in category %}
+                                    
+                                    <li class="d-flex align-items-center justify-content-between">
+                                            <a href="{% url 'cdetail_updateview' category.id %}"><button class="btn btn-outline-primary">{{category.name}}</button> </a>
+                                           <a href="{% url 'delete_category' category.id %}"><button class="btn btn-outline-danger"> delete </button></a> 
+                                    </li>
+                                           <hr class="bg-danger border-warning">
+                                    
+                                      
+                                    {% endfor %}
+                                    <br>
+                                    
+
+                                    <ol class="breadcrumb mb-4">
+                                        <li class="breadcrumb-item active">Add Categories</li>
+                                    </ol>
+                                    
+                                    
+                                    <div class="row">
+                                        
+                                            <div class="card bg-primary text-white mb-4">
+                                                <div class="card-body"> 
+                                                
+                                                <form method="POST">
+                                                    {% csrf_token %}
+                                                    {{form.as_p}}
+                                                   <center> <button class=" text-white btn btn-outline-info"> save </button></center>
+                                                    
+                                                </form>
+                                                
+                                                                    
+                                                </div>
+                                                
+                                            </div>
+                                        
+                                    </div>
+                                    
+                                    <hr class="bg-danger border-warning">
+                                    
+
+                                </div>
+                            </div>
+                        
+                            <div class="col-2">
+                                <br><br>
+                                    <center>
+                                    
+                                    </center>
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+{% endblock %}

@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                    {% if totalQ %}
+                    <a href="{% url 'salesrcd2' pk=request.user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+                        <button class="btn btn-outline-primary text-danger">
+                    
+                        {{totalQ}}
+                        </button></i></a>&nbsp;&nbsp;
+                    {% else %}
+                    <a href="{% url 'create_receipt' user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+                        <button class="btn btn-outline-primary text-danger">
+                        
+                        0
+                        </button></i></a>&nbsp;&nbsp;
+                    {% endif %}
+            
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="container-fluid px-4">
+                                    <h1 class="mt-4">Sales Receipt</h1>
+                                    <ol class="breadcrumb mb-4">
+                                        <li class="breadcrumb-item active">Sales Receipt</li>
+                                    </ol>
+                                    
+                                    
+                                    
+                                            <form method="get" action="{% url 'salesrc' %}" class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label for="start_date" class="form-label">Start Date:</label>
+                                                        <input type="date" name="start_date" id="start_date" value="{{ start_date }}" class="form-control">
+                                                    </div>
+                                                    
+                                                    <div class="col-md-6">
+                                                        <label for="end_date" class="form-label">End Date:</label>
+                                                        <input type="date" name="end_date" id="end_date" value="{{ end_date }}" class="form-control">
+                                                    </div>
+                                                    
+                                                    <div class="col-12">
+                                                        <center><button type="submit" class="btn btn-outline-primary">Filter</button></center>
+                                                    </div>
+                                            </form>
+
+
+
+
+                                
+                                    
+                                    <div class="row">
+                                            
+                                        
+                                    
+                                            <hr class="bg-danger border-warning">
+                                            {% for receipt in Receipt %}
+                                        
+                                    
+
+                                            <div class="card bg-primary text-white mb-4">
+                                                <div class="card-body d-flex align-items-center justify-content-between"> 
+                                                <small class="muted-text "> #{{receipt.id}} <br><br>{{receipt.date.time}}</small>
+                                                 <small class="muted-text"><h6>{{receipt.get_total_amount_onR}}</h6>
+                                                 <br>{{receipt.date.date}}</small>
+                                                                    
+                                                </div>
+                                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                                    <a class="small text-white stretched-link" href="{% url 'past_receiptS' receipt.id %}">View Details</a> 
+                                                    <div class="small text-white">{{salesreceipt.date.time}} &nbsp;&nbsp; <i class="fas fa-angle-right"></i></div>
+                                                </div>
+                                            </div>
+                                        
+                                            {% endfor %}
+                                    
+                                        
+                                    </div>
+<!--                                    <br><hr>
+
+                                  <nav aria-label="Page navigation example">
+
+    <ul class="pagination justify-content-center">
+
+        {% if Receipt.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1&{{filter_params|urlencode}}">&laquo;</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ Receipt.previous_page_number }}&{{filter_params | urlencode}}">previous</a>
+            </li>
+        {% endif %}
+
+        {% for i in number_of_pages %}
+            {% if i == Receipt.number %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ i }}</span>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link " href="?page={{ i }}&{{filter_params | urlencode}}">{{ i }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if Receipt.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ Receipt.next_page_number }}&{{filter_params | urlencode}}">next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ Receipt.paginator.num_pages }}&{{filter_params | urlencode}}">&raquo;</a>
+            </li>
+        {% endif %}
+
+    </ul>
+</nav>
+-->
+                                    <hr>
+                                        <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {% if Receipt.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% if start_date %}&start_date={{ start_date|date:'Y-m-d' }}{% endif %}{% if end_date %}&end_date={{ end_date | date:'Y-m-d' }}{% endif %}">&laquo;</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ Receipt.previous_page_number }}{% if start_date %}&start_date={{ start_date | date:'Y-m-d' }}{% endif %}{% if end_date %}&end_date={{ end_date| date:'Y-m-d' }}{% endif %}">previous</a>
+            </li>
+        {% endif %}
+
+        {% for i in number_of_pages %}
+             {% if page_num == '...' %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% elif i == Receipt.number %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ i }}</span>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link " href="?page={{ i }}{% if start_date %}&start_date={{ start_date|date:'Y-m-d' }}{% endif %}{% if end_date %}&end_date={{ end_date|date:'Y-m-d' }}{% endif %}">{{ i }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if Receipt.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ Receipt.next_page_number }}{% if start_date %}&start_date={{ start_date|date:'Y-m-d' }}{% endif %}{% if end_date %}&end_date={{ end_date|date:'Y-m-d' }}{% endif %}">next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ Receipt.paginator.num_pages }}{% if start_date %}&start_date={{ start_date|date:'Y-m-d' }}{% endif %}{% if end_date %}&end_date={{ end_date|date:'Y-m-d' }}{% endif %}">&raquo;</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+
+
+
+<!--
+
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+    
+
+                                {% if Receipts.has_previous %}
+                                        <li class="page-item ">   <a class="page-link" href="?page=1">&laquo </a></li>
+                                        <li class="page-item "> <a class="page-link" href="?page={{Receipts.previous_page_number}}">previous</a></li>
+                                {% endif %}
+            
+                                        
+                                            <li class="page-item disabled "> <a class="page-link muted-text text-primary" href="#"> Page {{Receipts.number}} of {{Receipts.paginator.num_pages}} </a> </li>
+                                            
+                                        
+                        
+                                {% for i in number_of_pages %}
+
+                                    <li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}"> {{ forloop.counter }}</a></li>
+
+                                {% endfor %}
+                            
+                            
+                            
+            {% for i in number_of_pages %}
+
+                {% if i == Receipts.number %}
+                <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% elif i == "..." %}
+                    <li class="page-item disabled"><span class="page-link">{{ i }}</span></li>
+                
+                {% else %}
+                    <li class="page-item " ><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+        
+                                {% if Receipts.has_next %}
+
+                                <li class="page-item" > <a class="page-link" href="?page={{Receipts.next_page_number}}">next</a></li>
+
+                                <li class="page-item"> <a class="page-link" href="?page={{Receipts.paginator.num_pages}}">  &raquo</a></li>
+
+                                {% endif%}          
+            
+    
+                         
+      
+    
+                            </ul>
+                        </nav>   
+                        -->  
+                        
+
+                         <hr>
+                         
+                         
+                         
+                                    
+                                    
+                                    
+
+                                </div>
+                            </div>
+                        
+                            <div class="col-2">
+                                <br><br><br><br><br><br><br><br>
+                                <center>
+                                <div class="shadow p-3 mb-5 bg-body-tertiary rounded-circle" style="width: 90px; height: 75px;">
+                                
+                                          
+                                          <a class="btn btn-outline-primary text-success rounded-circle" href=" {% url 'create_receipt' user.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" fill="currentColor" class="  bi bi-plus" viewBox="0 0 16 16">
+                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                            </svg></a>
+                                            <br>
+                                
+                                </div>
+                                </center>
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+{% endblock%}

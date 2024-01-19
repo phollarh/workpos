@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="container-fluid px-4">
+                                    <p class="mt-4"><h1>{{user.first_name}}'s Profile</h1>
+                                        {% if user.image %}
+                                    <img src="{{ user.image.url }}" class="rounded float-end" alt="User Image" style="width: 100px; height: 100px;">
+                                    {% else %}
+
+                                     <img src="{% static 'images/default.png' %}" class="img-fluid rounded-start float-end" style="width:100px; height: 100px;" >
+                                    {% endif %}
+
+                                    </p>
+
+                                    <br><br>
+                                    <hr class="bg-danger border-warning">
+                                    <form method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                        {{form.as_p}}
+                                        {{ form.media }}
+                                        <center> <button class="btn btn-outline-secondary "> Update Profile </button></center>
+                                    </form>
+                                    
+                                    
+                                        <a href="{% url 'change_password' %}"><button class="btn btn-outline-secondary "> Change Password </button></a>
+                                </div>
+                            </div>
+                        
+                            <div class="col-2">
+                                <br><br>
+                                    
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+{% endblock %}

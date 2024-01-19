@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="container-fluid px-4">
+                                    <h1 class="mt-4">Measurement</h1>
+                                    <ol class="breadcrumb mb-4">
+                                        
+                                    </ol>
+                                    <hr class="bg-danger border-warning">
+                                    
+                                    
+
+                                        <p class="breadcrumb-item active">Delete
+                                         <small>{{measurement.name}}</small> </p>
+                                        <div class="mb-3">
+                                            <form method="POST">
+                                                {% csrf_token %}
+                                                <p> Are you sure?</p>
+                                            
+                                                <button class="btn btn-outline-danger" > <small>Yes I'm sure</small> </button></form><br>
+                                                <a href="{% url 'create_measure' user.id %}"> 
+                                                    <button class="btn btn-outline-primary" > <small> No, Take me back </small> 
+                                                    </button>
+                                                </a>
+                                        
+                                            
+                                            
+                                        </div>
+                                        <hr class="bg-danger border-warning">
+                                        
+                                      
+                                    
+                                    
+                                    
+                                    
+                                    
+
+                                
+                                
+                                    
+                                    
+                                    
+
+                                </div>
+                            </div>
+                        
+                            <div class="col-2">
+                                <br><br>
+                                    
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="container-fluid px-4">
+                                    <h1 class="mt-4">Products</h1>
+                                    <ol class="breadcrumb mb-4">
+                                        <li class="breadcrumb-item active">Product Lists</li>
+                                    </ol>
+                                    <hr class="bg-danger border-warning">
+                                    
+                                    
+                                    {% for product in object_list %}
+                                    {% if user.id == product.user.id %}
+                                    <div class="row">
+                                        
+                                            <div class="card bg-primary text-white " >
+                                                <div class="card-body d-flex align-items-center justify-content-between"> 
+                                               <h6> {{product.product_name}}</h6> <small class="muted-text">{{product.selling_price}} / {{product.sold_In}} </small>                
+                                                </div>
+                                                <hr>
+                                                <div class="card-body d-flex align-items-center justify-content-between"> 
+                                                <h6> Inventory</h6><small class="muted-text"> {{product.stock_inventory}} {{product.sold_In}}</small>
+                                                                    
+                                                </div>
+                                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                                    <a class="small text-white" href="{% url 'delete_product' product.pk %}"> 
+                                                        <button class="btn btn-outline-danger" ><small class="small text-white">Delete</small>
+                                                        </button>
+                                                    </a>
+
+                                                    <a class="small text-white" href="{% url 'detail_updateview' product.id %}">
+                                                       View Details &nbsp; <i class="fas fa-angle-right"></i> 
+                                                    </a>
+                                                    
+                                                    
+                                                </div>
+                                            </div>
+                                        
+                                    </div>
+                                    <hr class="bg-danger border-warning">
+                                    {% endif %}
+                                    {% endfor %}
+                                    
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                          
+                                          <a class="btn btn-primary text-white rounded-circle" href="{% url 'create_product' user.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" fill="currentColor" class="  bi bi-plus" viewBox="0 0 16 16">
+                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                            </svg></a>
+                                            <br>
+                                    </div>
+
+                                </div>
+                            </div>
+                        
+                            <div class="col-2">
+                                <br><br>
+                                    
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+   {% endblock %}

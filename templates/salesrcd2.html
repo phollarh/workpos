@@ -1,0 +1,269 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Receipt - Bukkof POS Admin</title>
+        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" href="{% url 'index' %}">BUKKOF POS</a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#!">Settings</a></li>
+                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        {% else %}
+                        <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Core</div>
+                            <a class="nav-link" href="{% url 'create_receipt' user.id %}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Create Receipts
+                            </a>
+                            <a class="nav-link" href="{% url 'salesrc'  %}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Manage Sales 
+                            </a>
+                            <div class="sb-sidenav-menu-heading">Interface</div>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Product Lists
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{% url 'product_lists' %}">Products</a>
+                                    <a class="nav-link" href="{% url 'create_category' user.id %}">Categories</a>
+                                     <a class="nav-link" href="{% url 'create_measure' user.id %}">Measurements</a>
+                                </nav>
+                            </div>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                Pages
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
+                                        Authentication
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+                                    <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                        <nav class="sb-sidenav-menu-nested nav">
+                                            <a class="nav-link" href="login.html">Login</a>
+                                            <a class="nav-link" href="register.html">Register</a>
+                                            <a class="nav-link" href="password.html">Forgot Password</a>
+                                        </nav>
+                                    </div>
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                        Error
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+                                    <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                        <nav class="sb-sidenav-menu-nested nav">
+                                            <a class="nav-link" href="401.html">401 Page</a>
+                                            <a class="nav-link" href="404.html">404 Page</a>
+                                            <a class="nav-link" href="500.html">500 Page</a>
+                                        </nav>
+                                    </div>
+                                </nav>
+                            </div>
+                            <div class="sb-sidenav-menu-heading">Addons</div>
+                            <a class="nav-link" href="charts.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                Charts
+                            </a>
+                            <a class="nav-link" href="tables.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Tables
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as: {{user.username}} </div>
+                        
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+
+                <main>
+                    
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="container-fluid px-4">
+                                    
+                                    <h1 class="mt-4"> </h1>
+                                    <ol class="breadcrumb mb-4">
+                                        
+                                            <div class=" card">
+                                                    <div class="card-footer btn btn-outline-secondary d-flex align-items-center    justify-content-between" > <i class="fas fa-angle-left "></i> &nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <a class="small stretched-link" href="{% url 'salesrc' %}">  Return to past receipts</a>
+                                                    </div>
+                                                </div>
+                                    </ol>
+                                    
+                                            <hr class="bg-danger border-warning">
+
+                                        <div class="card bg bg-primary text-white w-75 mb-3">
+                                            {% for receipt in Receipt.products.all %}
+                                            <div class="card-body d-flex align-items-center justify-content-between ">
+
+                                                
+                                                  <a href="{% url 'create_receiptV_update' receipt.id %}"> <button class="btn btn-outline-primary text-white "><h6>{{receipt.product.product_name|upper}}<br>{{receipt.Quantity}} X{{receipt.product.selling_price}} </h6> </button> </a>
+                                                   <a class="text-white" href="{% url 'remove_producto' receipt.id %}">
+                                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                      <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                                    </svg></a>
+                                                 <h6> {{receipt.price}}</h6>
+                                                    
+                                                    
+                                                
+
+                                                
+                                            </div>
+                                            {% endfor %}
+                                            <br><br><br><br><br>
+                                            <div class="card-body d-flex align-items-center    justify-content-between">
+                                                 <h6>Total</h6> <h6>{{Receipt.get_total_amount_onR}} </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                 
+
+                                            </div>
+                                            <div class="card-footer">
+                                                <center>
+                                                <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                                Charge
+                                                </button>
+                                            </center>
+                                            
+                                            
+
+                                            </div>
+            
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+                                    
+                                <p> Amount : <small>{{Receipt.get_total_amount_onR}}</small>  </p>
+                                        <hr class="bg-danger border-warning">
+                                <!-- Modal -->
+                                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                  <div class="modal-dialog modal-dialog-scrollable" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header bg-primary text-white">
+                                        <h4 class="modal-title fs-5" id="staticBackdropLabel">Payment</h4>
+                                        <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <center>
+                                            <p><small class="text-muted">Amount Due </small><h6>
+                                        {{Receipt.get_total_amount_onR}}</h6></p><br>
+                                        <form id="myForm" method="post" action="{% url 'salesrcd2' user.id %}">
+                                                <center>
+                                                     {% csrf_token %}
+                                                         
+                                                    {{ formpay.as_p }}
+                                               <center>
+                                                <button type="submit" class="btn btn-outline-primary">Charge</button>
+                                        
+                                                
+                                            
+                                            </center>
+                                                </form><br>
+                                                                                
+                                        
+                                                
+                                        <hr class="bg-danger border-warning">
+                                        
+                                         </center>   
+                                      </div>
+                                      <div class="modal-footer">
+
+                                        
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                
+
+                                
+
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
+                            <div>
+                                <a href="#">Privacy Policy</a>
+                                &middot;
+                                <a href="#">Terms &amp; Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="{% static 'js/scripts.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="{% static 'assets/demo/chart-area-demo.js' %} "></script>
+        <script src="{% static 'assets/demo/chart-bar-demo.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+        <script src="{% static 'js/datatables-simple-demo.js' %} "></script>
+    </body>
+</html>

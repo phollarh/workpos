@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+            
+                
+                    <div class="container-fluid px-4">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <h1 class="mt-4">Products</h1>
+      
+
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item active">Sales for {{pro.product_name}}</li>
+                        </ol>
+
+
+                        <div class="row">
+                             <form method="get" action="" class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label for="start_date" class="form-label">Start Date:</label>
+                                                        <input type="date" name="start_date" id="start_date" value="{{ start_date }}" class="form-control">
+                                                    </div>
+                                                    
+                                                    <div class="col-md-6">
+                                                        <label for="end_date" class="form-label">End Date:</label>
+                                                        <input type="date" name="end_date" id="end_date" value="{{ end_date }}" class="form-control">
+                                                    </div>
+                                                    
+                                                    <div class="col-12">
+                                                        <center><button type="submit" class="btn btn-outline-primary">Filter</button></center>
+                                                    </div>
+                                            </form>
+                                            <br><br>
+                                            <hr class="bg-danger border-warning">
+
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body"><center><h2>{{total_price}}</h2> <small class="muted-text">Gross Sales</small></center></div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                    
+                                        <div class="small text-white"><i> {{start_date}} to {{end_date}}</i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body"><center><h2>{{total_price}}</h2> <small class="muted-text">Net Sales</small></center></div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        
+                                        <div class="small text-white"><i >{{start_date}} to {{end_date}}</i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-danger text-white mb-4">
+                                    <div class="card-body"><center><h2>{{total_priceCost}}</h2> <small class="muted-text">Gross Costs</small></center></div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        
+                                        <div class="small text-white"><i>{{start_date}} to {{end_date}}</i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-success text-white mb-4">
+                                    <div class="card-body"><center><h2>{{Profit}}</h2> <small class="muted-text">Gross Profit</small></center></div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                            
+                                        <div class="small text-white"><i>{{start_date}} to {{end_date}}</i></div>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                    <br>
+
+                        <div class="shadow p-2 mb-3 bg-body-tertiary rounded"> 
+                                        <br>
+                                        <a href=""><button  class="btn btn-outline-info"><i class="bi bi-database-fill-add">&nbsp;&nbsp;&nbsp; {{pro}}</i></button></a>
+                                        
+                                        <hr class="border-warning">
+                                        <br>
+                                        <h6 class="text-primary muted-text"> Sales Details for {{start_date}} to {{end_date}}</h6>
+                                        <div class="table-responsive">
+                            
+                                        <table class="table table-hover  table-sm text-center  " style="width: 100%;">
+
+                                          <thead class="table-secondary text-muted ">
+                                            <tr class="text-primary">
+                                              <th scope="col" style="width: 20%; padding-top: 10px;"><i><h6>Product Details </h6></i></th>
+                                              <th scope="col" style="width: 15%;"><i><h6> Category </h6></i></th>
+                                              <th scope="col" style="width: 15%;"><i> <h6>&nbsp;&nbsp;&nbsp;Product ID </h6></i></th>
+                                              <th scope="col" style="width: 15%;"><i><h6>Selling Price</h6></i></th>
+                                              <th scope="col" style="width: 15%;"><i><h6>Total Qty</h6></i></th>
+                                              <th scope="col" style="width: 20%;"><i><h6> Total Product Sold </h6></i></th>
+
+                                              
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                        
+                                            
+                                            <tr class="text-primary">
+                                              <td style="vertical-align: middle; padding-top: 10px;" ><a class="text-primary" href="" style="text-decoration: none;"><i>{{ pro.product_name }}</i>&nbsp;&nbsp;&nbsp;&nbsp;</a>
+</td>
+                                                <td style="vertical-align: middle; padding-top: 10px;">
+                                    
+                                                    <a style="text-decoration:none;" href=""><i>{{ pro.category }}</i></a>
+                                
+                                                </td>
+                                            <td style="vertical-align: middle; padding-top: 10px;">
+                                                <a style="text-decoration: none; " href=""> <i>&nbsp;  00{{ pro.id }}</i></a>
+                                            </td> 
+                                              <td style="vertical-align: middle; padding-top: 10px;"><a style="text-decoration:none;" href="">{{pro.selling_price}} <i></i></a>&nbsp;
+                                              </td>
+                                              <td style="vertical-align: middle; padding-top: 10px;"><a style="text-decoration:none;" href=""> <i>{{totalQ}}</i></a>&nbsp;
+                                              </td>
+                                              <td style="vertical-align: middle; padding-top: 10px;"><a style="text-decoration:none;" href="">{{h}} <i></i></a>&nbsp;
+                                              </td>
+                                            </tr>
+
+                                            
+
+                                          </tbody>
+                                        </table>
+                                        
+                                        </div>
+                                    </div>
+
+                    <br>
+                  
+
+                        
+                    </div>
+            
+                </main>
+{% endblock %}
+ 

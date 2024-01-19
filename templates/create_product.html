@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="container-fluid px-4">
+                                    
+                                    <h1 class="mt-4">Product Information</h1>
+                                    <ol class="breadcrumb mb-4">
+                                        <li class="breadcrumb-item active">Add Product</li>
+                                    </ol>
+                                    <hr class="bg-danger border-warning">
+                                    
+                                    <div class="row">
+                                        
+                                            <div class="card bg-primary text-white mb-4">
+                                                <div class="card-body"> 
+                                                
+                                                <form method="POST">
+                                                {% csrf_token %}
+                                                    <form method="post">
+                                                      {% csrf_token %}
+                                                      
+                                                      {{ form.product_name.label_tag }}
+                                                      {{ form.product_name }}
+                                                      <hr>
+
+                                                      {{ form.sold_In.label_tag }}
+                                                      {{ form.sold_In }}
+                                                      
+                                                        <a href="{% url 'create_measure' user.id %}"> <small class=" text-white "> Create New Sold In</small></a><br><hr>
+                                                      
+                                                      
+                                                      {{ form.cost_price.label_tag }}
+                                                      {{ form.cost_price }}
+                                                        <hr>
+                                                      {{ form.selling_price.label_tag }}
+                                                      {{ form.selling_price }}
+                                                        <hr>
+                                                      {{ form.category.label_tag }}
+                                                      {{ form.category }}
+                                                      <a href="{% url 'create_category' user.id %}"> <small class=" text-white "> Create New Category</small></a><br>
+                                                        <hr>
+
+                                                      {{ form.description.label_tag }}
+                                                      {{ form.description }}
+                                                      <hr>
+                                                       {{ form.stock_inventory.label_tag }}
+                                                      {{ form.stock_inventory }}
+                                                        <hr>
+                                                    <center> 
+                                                    <button class="btn btn-secondary"> submit </button>
+                                                    </center>
+                                                </form>
+                                                
+                                                                    
+                                                </div>
+                                                
+                                            </div>
+                                        
+                                    </div>
+                                    
+                                    <hr class="bg-danger border-warning">
+                                    
+
+                                </div>
+                            </div>
+                        
+                            <div class="col-2">
+                                <br><br>
+                                    <center>
+                                    
+                                    </center>
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+{% endblock %}

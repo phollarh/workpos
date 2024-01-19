@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                     <a href="{% url 'salesrcd2' pk=request.user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+ <button class="btn btn-outline-primary text-danger">
+                    {% if totalQ %}
+                        {{totalQ}}
+                    {% else %}
+                        0
+                    {% endif %}                    
+            </button></i></a>&nbsp;&nbsp;
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="container-fluid px-4">
+                                    <h1 class="mt-4">Receipts Sucess</h1> 
+                                    <ol class="breadcrumb mb-4  d-flex align-items-center    justify-content-between">
+                                        <li class="breadcrumb-item active">Success </li>
+                                        <a href="{% url 'Delete_receiptS' Receipt.id %}"> <button class="btn btn-outline-danger"><small class="text-muted">Delete</small></button></a>
+                                    </ol>
+                                    <hr class="bg-danger border-warning">
+                                    <div class="row">
+                                        <div class="card bg-primary text-white mb-4">
+                                            <div class="card-body "> 
+                                            <br><br>
+                                            <table class="table text-white mb-4">
+                                                <thead>
+                                                  <tr>
+                                                     <center> <h5>{{Receipt.payment.amount}} </h5> </center>
+                                                  </tr>
+                                                </thead>
+                                                
+                                                <tbody class="table-group-divider col-8">
+                                                  <tr>
+                                                    
+                                                    <td ><p> Served by : <small class="muted-text ">{{Receipt.user.username}}</small></p> <p> Date : <small class="muted-text">{{Receipt.date}}</small></p><br>
+                                                        {% for Receipt in Receipt.products.all %}
+                                                       <p><h6 >{{Receipt.product.product_name}}</h6></p> 
+
+                                                        <small class="muted-text"> {{Receipt.Quantity}} X {{Receipt.product.selling_price}} </small>
+                                                        {% endfor %}
+                                                    </td>
+
+                                                       <td>
+                                                        <br><br><br><br><br><br><br>
+                                                            {% for Receipt in Receipt.products.all %}
+                                                            <h6>{{Receipt.price}}</h6><br><br>
+                                                            {% endfor %}
+                                                        </td>
+                                                  </tr>
+                                                            
+                                                  <tr>
+                                                    <td > <strong>Sub total</strong> <br> Tax <br>Charge <br>  </td>
+                                                    <td>  <h6>{{Receipt.payment.amount}}</h6> </td>
+                                                  </tr> 
+
+                                                  <tr>
+                                                    <td>
+                                                      <strong>Total</strong><br>
+                                                    </td>
+                                                    <td><h6>{{Receipt.payment.amount}}</h6> </td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td>
+                                                      <small class="muted-text">{{Receipt.payment_option}}</small><br>
+                                                    </td>
+                                                    <td> 
+                                                        <small class="muted-text"> {{Receipt.payment.amount}} </small>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                                
+                                            </table>
+                                              
+                                              <center> 
+                                              <p class="card-text ">{% if Reciept.Note %} {{Receipt.Note}} {% endif %}</p>
+                                              <div class="shadow p-3 mb-5 bg-body-light rounded">
+                                              <a href="#" class="btn btn-outline-light">Reprint</a>
+                                              </div>
+                                            </center>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+
+                            
+                        </div>
+                    </div>
+            
+                            
+                
+                    
+                </main>
+{% endblock %}

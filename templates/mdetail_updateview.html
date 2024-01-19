@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="container-fluid px-4">
+                                
+                                    <h1 class="mt-4">Measurement Information</h1>
+                                    <ol class="d-flex align-items-center justify-content-between breadcrumb mb-4">
+                                        <li class="breadcrumb-item active">Update Measurement</li><a href="{% url 'delete_measurement' measurement.pk %}"> <button class="btn btn-outline-danger" ><small> Delete </small></button></a> 
+                                    </ol>
+                                    <hr class="bg-danger border-warning">
+                                    <div class="row">
+                                        <div class="card ">
+                                              <small class="card-header">
+                                             
+                                            <form method="POST">
+                                                            {% csrf_token %}
+
+                                                            {{form.as_p}}
+                                                          <center> <button class="btn btn-outline-secondary" ><small>Save</small> </button></center>
+                                                                   
+                                                          
+                                                            
+                                            </form></small>
+                                                 
+                                        </div>
+                                    </div>
+                                    
+                                     <div class="row">
+                                        <div class=" card">
+                                            <div class="card-footer  d-flex align-items-center    justify-content-between" ><i class="fas fa-angle-left "></i>
+                                                <a class="small stretched-link" href="{% url 'create_measure' user.id %}">Return to Measurement Lists</a>
+                                            </div>
+                                        </div>      
+                                    </div>  
+                                    
+                                    
+                                </div>
+                            </div>
+                        
+                            <div class="col-2">
+                                <br><br>
+                                    <center>
+                                    
+                                    
+                                    </center>
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+{% endblock %}

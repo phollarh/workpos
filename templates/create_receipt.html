@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+                <main>
+                        {% if totalQ %}
+                            <a href="{% url 'salesrcd2' pk=request.user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+                         <button class="btn btn-outline-primary text-danger">
+                                            
+                                                {{totalQ}}
+                                                </button></i></a>&nbsp;&nbsp;
+                        {% else %}
+                                            <a href="{% url 'create_receipt' user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+                         <button class="btn btn-outline-primary text-danger">
+                                                0
+                                                                
+                                    </button></i></a>&nbsp;&nbsp;
+                       {% endif %}
+                        <br><br>
+                                
+                    <div class="container">
+                         {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <br><br><br>
+                        <div class="card float-end border-info" style="width: 12rem; ">
+                            <center>
+                              {% if  staff_login.outlet_staff.image %}
+                            <img src="{{staff_login.outlet_staff.image.url}}" class="rounded-circle" style="width: 90px; height:90px;"> </img>
+                            {% else %}
+                            <img src="{% static 'images/default.png' %}" class="rounded-circle" style="width: 90px; height:90px;"> </img>
+                            {% endif %}
+
+                                <a href="#" class="btn btn-outline-primary"><i class=" float-end">{{staff_login.outlet_staff.name}}</i></a>
+                                <br><br>
+                            
+                            <a  href="{% url 'employee_logout' staff_login.pk %}"> <button class="btn btn-outline-danger btn-sm"><small class="muted-text">Logout</small></button></a>
+                            </center>
+                        </div>
+                            
+
+                    <br><hr class="bg-danger border-warning ">
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="container-fluid px-4">
+                                    
+                                    <h1 class="mt-4">Receipts</h1><br>
+                                    <div class="grid gap-3">
+                                         {% for product in productList %}
+                                        <div class="p-2 g-col-6">
+                                            <div class="shadow-lg p-2 mb-6 bg-body-tertiary rounded">
+                                           
+                                            <a href="{% url 'create_receiptV' product.pk %}"> <button class=" btn btn-outline-secondary" style="width: 300px; height: 70px;">{{product.product_name}} | &nbsp;{{product.selling_price}} per {{product.sold_In}} </button></a>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>        
+                                    
+                                    <hr class="bg-danger border-warning">
+                                    
+
+                                </div>
+                            </div>
+                        
+                            <div class="col-2">
+                                <br><br>
+                                    <center>
+                                    
+                                    </center>
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+{% endblock %}

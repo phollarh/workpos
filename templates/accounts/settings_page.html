@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="container-fluid px-4">
+                                   
+                                    <br><br>
+                                    <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+                                        <h4 class="mt-4">
+                                           <i class="bi bi-gear-fill text-primary"> &nbsp;&nbsp;Settings</i>
+                                        </h4>
+                                        <ol class="breadcrumb mb-4">
+                                            <li class="breadcrumb-item active text-primary">System settings</li>
+                                        </ol>
+
+                                    <hr class="bg-danger border-warning">
+                                        <div class="card w-75 mb-3" style="width: 18rem;">
+                                          <div class="card-header">
+
+                                          </div>
+
+                                          
+                            
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item"> 
+                                                    <p><i class="bi bi-shop text-primary">&nbsp;&nbsp;<strong>Outlets and POS Settings</strong></i></p>
+                                                    <hr class="bg-danger border-warning">
+                                                <div class="d-grid gap-2">
+                                                    <a href="{% url 'settings_paged' %}"><button class="btn btn-outline-light text-primary"><i class="bi bi-sliders2">&nbsp;&nbsp;Outlets</i></button></a>
+                                                    
+                                                    <a href="{% url 'outlet_staffs' %}">
+                                                    <button class="btn btn-outline-light text-primary"><i class="bi bi-sliders2">&nbsp; Employees</i></button></a>
+                                                    {% if active_staff %}
+                                                        <p> <a href="{% url 'staff_Details' pk=staff_login.id %}">
+                                                            <button class="btn btn-outline-light text-primary"><i class="bi bi-sliders2">&nbsp;Signed in staff {{active_staff}} </i></button></a>
+                                                            <a href="{% url 'employee_logout' pk=staff_login.id %}">
+                                                            <button class="btn btn-outline-light text-primary"><i class="bi bi-box-arrow-left p-3 fs-4" >&nbsp;</i></button></a> </p>
+                                                    
+                                                           
+                                                    {% else %}
+                                                        <a href="{% url 'employee_login'  %}">
+                                                            <button class="btn btn-outline-light text-primary"><i class="bi bi-sliders2">Employees Login</i></button></a>
+
+                                                            
+                                                    {% endif %}
+                                                </div>
+                                                
+
+                                
+
+                                                </li>
+                                            </ul>
+                                
+                                        </div>
+                                            
+
+                                    </div>
+
+                                    
+                                    
+                                </div>
+                                    
+                            </div>
+                        
+                            <div class="col-2">
+                                <br><br>
+                                    
+                            
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+{% endblock %}

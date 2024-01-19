@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                     <a href="{% url 'salesrcd2' pk=request.user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+ <button class="btn btn-outline-primary text-danger">
+                    {% if totalQ %}
+                        {{totalQ}}
+                    {% else %}
+                        0
+                    {% endif %}                    
+            </button></i></a>&nbsp;&nbsp;
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="container-fluid px-4">
+                                    
+                                    <h1 class="mt-4">Receipts</h1><br>
+                                    
+                                    <ol class="breadcrumb mb-4">
+                                        <li class="breadcrumb-item active">Create Receipt </li>
+                                    </ol>
+                                    
+                                    
+                                    <div class="row">
+                                        
+                                            <div class="card bg-primary text-white mb-4">
+                                                <div class="card-body"> 
+                                                
+                                                <form method="POST">
+                                                    {% csrf_token %}
+                                                    {{form.as_p}}
+                                                   <center> <button class="btn btn-outline-secondary text-white"> submit </button></center>
+                                                    
+                                                </form>            
+                                            </div>
+                                            
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                TEST
+                            </div>
+                        </div>
+                    </div>
+                                    
+                                    <hr class="bg-danger border-warning">
+                                    <!-- Button trigger modal -->
+<center><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  Charge
+</button></center>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h4 class="modal-title fs-5" id="staticBackdropLabel">Payment</h4>
+        <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product name</th>
+              <th>Price</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Product 1</td>
+              <td>100$</td>
+              <td><a><i class="fas fa-times"></i></a></td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>Product 2</td>
+              <td>100$</td>
+              <td><a><i class="fas fa-times"></i></a></td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Product 3</td>
+              <td>100$</td>
+              <td><a><i class="fas fa-times"></i></a></td>
+            </tr>
+            <tr>
+              <th scope="row">4</th>
+              <td>Product 4</td>
+              <td>100$</td>
+              <td><a><i class="fas fa-times"></i></a></td>
+            </tr>
+            <tr class="total">
+              <th scope="row">5</th>
+              <td>Total</td>
+              <td>400$</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+                                
+                        
+                        
+                        
+                    
+                                
+
+                </main>
+{% endblock %}
