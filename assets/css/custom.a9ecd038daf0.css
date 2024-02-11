@@ -1,0 +1,17 @@
+/* custom.css */
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.gap-3 {
+    gap: 3rem; /* Adjust the value as needed */
+}
+
+.p-2 {
+    padding: 2rem; /* Adjust the value as needed */
+}
+
+.g-col-6 {
+    grid-column: span 6;
+}
