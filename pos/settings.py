@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-oy&$uxkrsdom_#3((ve&7mgmx^l@*7%58yto^$ol$0)+@(oxj+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS =  ['firstbukkofpos.com', 'firstbukkofpos.onrender.com']
+ALLOWED_HOSTS =  []
 
 
 # Application definition
@@ -139,12 +139,12 @@ STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static'),
 
         ]
 
-if not DEBUG:
+
     
-    STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
    
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 #STATIC_ROOT=os.path.join(BASE_DIR, 'assets')
 MEDIA_URL='/media/'
