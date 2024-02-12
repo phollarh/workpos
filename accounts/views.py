@@ -230,6 +230,7 @@ def Settings_Page(request):
 	
 	except OutletStaffLogin.DoesNotExist:
 		staff_login=None
+		active_staff=None
 
 	outlet_staff = OutletStaff.objects.filter(user=request.user)
 	if staff_login.user.id ==request.user.id:
@@ -569,7 +570,7 @@ def OutletStaffLoginView(request):
 		}
 		return render(request, 'outlets/outlet_staffsLogin.html', context)
 	else:
-		return render(request, '401.html')
+		return render(request, 'outlets/outlet_staffsLogin.html')
 
 
 def OutletStaffDView(request, pk):
