@@ -132,7 +132,7 @@ class UserUpdateSettingsForm(forms.ModelForm):
     city=forms.CharField(max_length=50, required=False,widget=forms.TextInput(attrs={'class':'form-control'}))
     address=forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     phone_number=forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
-    staff=forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class':'form-control'}))
+    #staff=forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class':'form-control'}))
     Facebook=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     Instagram=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     outlet_logo=forms.ImageField(label='Image', required=False, widget=forms.ClearableFileInput(attrs={'class': 'form-control'}))
@@ -156,15 +156,10 @@ class OutletForm(forms.ModelForm):
     Facebook=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     Instagram=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     outlet_logo=forms.ImageField(label='Image', required=False, widget=forms.ClearableFileInput(attrs={'class': 'form-control'}))
-    outlet_description=forms.CharField(max_length=200,  required=False,widget=forms.TextInput(attrs={'class':'form-control'}))
-
-    error_messages = {
-        'city': {'required': "Please enter your city."},
-        'address': {'required': "Please enter your address."},
-        'phone_number': {'required': "Please enter your phone number."}
-    }
+    outlet_description=forms.CharField(max_length=20,  required=False,widget=forms.TextInput(attrs={'class':'form-control'}))
     
     
+   
     
     
     class Meta:
@@ -229,6 +224,7 @@ class OutletStaffLoginForm(forms.ModelForm):
             self.fields['outlet_staff'].queryset = OutletStaff.objects.filter(user=user)
         self.fields['outlet_staff'].label = ''
         #self.fields['outlet_staff'].choices = [('', 'Select Outlet Staff')] + list(self.fields['outlet_staff'].choices)
+
     def clean(self):
         cleaned_data = super().clean()
         outlet_staff = cleaned_data.get('outlet_staff')
