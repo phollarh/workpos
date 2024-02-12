@@ -230,25 +230,25 @@ def Settings_Page(request):
 	
 	except OutletStaffLogin.DoesNotExist:
 		staff_login=None
-		active_staff=None
+		#active_staff=None
 
 	outlet_staff = OutletStaff.objects.filter(user=request.user)
-	if staff_login and staff_login.user.id == request.user.id:
+	#if staff_login and staff_login.user.id == request.user.id:
 
-		if staff_login:
-			context={
+	if staff_login:
+		context={
 				'active_staff':active_staff,
 				'staff_login':staff_login,
 				'outlet_staff':outlet_staff,
 				}
 
-			return render(request, 'accounts/settings_page.html', context)
+		return render(request, 'accounts/settings_page.html', context)
 
-		else:
-
-			return render(request, 'accounts/settings_page.html')
 	else:
-		return render(request, '404.html')
+
+		return render(request, 'accounts/settings_page.html')
+#	else:
+#		return render(request, '404.html')
 
 
 @login_required
@@ -542,35 +542,35 @@ def passwordResetConfirm(request, uidb64, token):
 def OutletStaffLoginView(request):
 	#outlet_staff1=get_object_or_404(OutletStaff, user=request.user)
 	outlet_staff = get_object_or_404(OutletStaffLogin, user=request.user)
-	if outlet_staff.user.id == request.user.id:
-		form_l=StaffValidityForm(request.POST or None)
+	#if outlet_staff.user.id == request.user.id:
+	form_l=StaffValidityForm(request.POST or None)
+	form=OutletStaffLoginForm(request.POST or None, instance=outlet_staff, user=request.user)
+	if request.method=="POST":
 		form=OutletStaffLoginForm(request.POST or None, instance=outlet_staff, user=request.user)
-		if request.method=="POST":
-			form=OutletStaffLoginForm(request.POST or None, instance=outlet_staff, user=request.user)
-			form_l=StaffValidityForm(request.POST or None)
-			if form.is_valid() and form_l.is_valid():
-				employee_id_entered = form_l.cleaned_data.get('Unique_pin')
+		form_l=StaffValidityForm(request.POST or None)
+		if form.is_valid() and form_l.is_valid():
+			employee_id_entered = form_l.cleaned_data.get('Unique_pin')
 
-				if OutletStaff.objects.filter(Employee_id=employee_id_entered).exists():
-				 	user_outlet = form.save(commit=False)
+			if OutletStaff.objects.filter(Employee_id=employee_id_entered).exists():
+			 	user_outlet = form.save(commit=False)
 
-				 	user_outlet.user = request.user
-				 	user_outlet.save()
-				 	messages.success(request, 'sign in successful')
-				 	return redirect('staff_Details', pk=outlet_staff.pk)
-				else:
-				 	messages.error(request, 'Invalid Employee ID Details')
+			 	user_outlet.user = request.user
+			 	user_outlet.save()
+			 	messages.success(request, 'sign in successful')
+			 	return redirect('staff_Details', pk=outlet_staff.pk)
+			else:
+			 	messages.error(request, 'Invalid Employee ID Details')
 
 				
 				
 
-		context={
+	context={
 				"form":form,
 				"form_l":form_l,
 		}
-		return render(request, 'outlets/outlet_staffsLogin.html', context)
-	else:
-		return render(request, 'outlets/outlet_staffsLogin.html')
+	return render(request, 'outlets/outlet_staffsLogin.html', context)
+	#else:
+	#	return render(request, 'outlets/outlet_staffsLogin.html')
 
 
 def OutletStaffDView(request, pk):
