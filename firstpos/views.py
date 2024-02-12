@@ -321,7 +321,7 @@ def CreateReceipt(request, pk):
 
 		staff_login = OutletStaffLogin.objects.get(user=request.user.pk) 
 		active_staff=staff_login.outlet_staff
-		print(active_staff)
+		
 	except OutletStaffLogin.DoesNotExist:
 		staff_login=None
 		active_staff = None
@@ -351,6 +351,7 @@ def CreateReceiptV(request, pk):
 	product=get_object_or_404(ProductList, pk=pk)
 	totalQ = request.session.get('totalQ', 0)
 	current_user=request.user
+	
 	if product.user.id == current_user.id:
 
 		form = ProductFormO(request.POST or None)
@@ -359,6 +360,7 @@ def CreateReceiptV(request, pk):
 			form=ProductFormO(request.POST)
 
 			if form.is_valid():
+				
 				creator=form.save(commit=False)
 				creator.user=request.user
 				creator.product=product
