@@ -230,25 +230,26 @@ def Settings_Page(request):
 	
 	except OutletStaffLogin.DoesNotExist:
 		staff_login=None
-		 active_staff = None
+		active_staff = None
 
 	outlet_staff = OutletStaff.objects.filter(user=request.user)
-	#if staff_login.user.id ==request.user.id:
+	if staff_login and staff_login.user.id == request.user.id:
 
-	if staff_login:
-		context={
+		if staff_login:
+			context={
 				'active_staff':active_staff,
 				'staff_login':staff_login,
 				'outlet_staff':outlet_staff,
 				}
 
-		return render(request, 'accounts/settings_page.html', context)
+			return render(request, 'accounts/settings_page.html', context)
 
+		else:
+
+			return render(request, 'accounts/settings_page.html')
 	else:
 
 		return render(request, 'accounts/settings_page.html')
-	#else:
-	#	return render(request, '404.html')
 
 
 @login_required
