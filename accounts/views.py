@@ -233,7 +233,7 @@ def Settings_Page(request):
 		active_staff=None
 
 	outlet_staff = OutletStaff.objects.filter(user=request.user)
-	if staff_login.user.id ==request.user.id:
+	if staff_login and staff_login.user.id == request.user.id:
 
 		if staff_login:
 			context={
