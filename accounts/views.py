@@ -424,7 +424,7 @@ def OutletCreatView(request):
 				
 				form_create.save()
 				messages.success(request, ('Outlet added successfully...'))
-				return redirect('/')
+				return redirect('settings_paged')
 
 		context={
 					'form':form,
