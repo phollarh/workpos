@@ -21,7 +21,7 @@ urlpatterns = [
     path('outlet_staffs', views.OutletStaffListsView, name='outlet_staffs'),
     path('outlet_staffs/outlet_staffsup/<int:pk>', views.OutletStaffUpdateView, name='outlet_staffsup'),
     path('outlet_staffs/delete/<int:pk>', views.DeleteOutletStaffView, name='delete_employee'),
-    path('outlet_staffs/employee_login/', views.OutletStaffLoginView, name='employee_login'),
-    path('outlet_staffs/employee_logout/<int:pk>', views.OutletStaffLogout, name='employee_logout'),
+    path('employee_login/', views.OutletStaffLoginView, name='employee_login'),
+    path('employee_logout/<int:pk>', views.OutletStaffLogout, name='employee_logout'),
     path('outlet_staffs/<int:pk>/staff_Details/', views.OutletStaffDView, name='staff_Details')
 ]   
