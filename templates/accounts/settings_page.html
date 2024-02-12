@@ -40,8 +40,7 @@
                                                     
                                                     <a href="{% url 'outlet_staffs' %}">
                                                     <button class="btn btn-outline-light text-primary"><i class="bi bi-sliders2">&nbsp; Employees</i></button></a>
-                                                    <a href="{% url 'employee_login' %}">
-                                                    <button class="btn btn-outline-light text-primary"><i class="bi bi-sliders2">&nbsp; Employee login</i></button></a>
+                                                    
 
                                                     {% if active_staff %}
                                                         <p> <a href="{% url 'staff_Details' pk=staff_login.id %}">
