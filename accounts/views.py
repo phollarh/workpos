@@ -225,14 +225,14 @@ def Settings_Page(request):
 
 		staff_login = OutletStaffLogin.objects.get(user=request.user) 
 		active_staff=staff_login.outlet_staff
-		print(staff_login.outlet_staff)
+		
 
 	
 	except OutletStaffLogin.DoesNotExist:
 		staff_login=None
-		active_staff = None
+
 	outlet_staff = OutletStaff.objects.filter(user=request.user)
-	if staff_login.user.id == request.user.id:
+	if staff_login.user.id ==request.user.id:
 
 		if staff_login:
 			context={
@@ -334,7 +334,6 @@ def AddOutletStaff(request):
 	return render (request, 'outlets/add_outletStaff.html',context)
 	
 
-
 @login_required
 @email_verified_required
 def DeleteOutletStaffView(request, pk):
@@ -359,6 +358,22 @@ def DeleteOutletStaffView(request, pk):
 	else:
 		return render(request, '404.html')
 
+@login_required
+@email_verified_required
+def OutletStaffLogout(request, pk):
+	outlet_staff= OutletStaff.objects.filter(user=request.user)
+	outlet_staff1 = OutletStaffLogin.objects.get(pk=pk)
+	user=request.user
+	if outlet_staff1.user.id == user.id:
+		
+		outlet_staff1.outlet_staff=None
+		outlet_staff1.save()
+		messages.success(request, 'signed out successful.')
+		return redirect('settings_page')
+    	#return redirect(request.META.get("HTTP_REFERER"))
+    #return render(request, 'delete_measurement.html', {'measurement': measurement})
+	else:
+		return render(request, '404.html')
 
 
 @login_required
@@ -409,12 +424,12 @@ def OutletCreatView(request):
 				messages.success(request, ('Outlet added successfully...'))
 				return redirect('settings_paged')
 
-	context={
-				'form':form,
+		context={
+					'form':form,
 				
-				'outlet':outlet,
+					'outlet':outlet,
 
-			}
+				}
 	return render (request, 'outlets/create_outlet.html',context)
 	
 
@@ -575,19 +590,3 @@ def OutletStaffDView(request, pk):
 		return render(request, '404.html')
 
 
-@login_required
-@email_verified_required
-def OutletStaffLogout(request, pk):
-	outlet_staff= OutletStaff.objects.filter(user=request.user)
-	outlet_staff1 = OutletStaffLogin.objects.get(pk=pk)
-	user=request.user
-	if outlet_staff1.user.id == user.id:
-		
-		outlet_staff1.outlet_staff=None
-		outlet_staff1.save()
-		messages.success(request, 'signed out successful.')
-		return redirect('settings_page')
-    	#return redirect(request.META.get("HTTP_REFERER"))
-    #return render(request, 'delete_measurement.html', {'measurement': measurement})
-	else:
-		return render(request, '404.html')
