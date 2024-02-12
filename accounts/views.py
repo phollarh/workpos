@@ -230,8 +230,9 @@ def Settings_Page(request):
 	
 	except OutletStaffLogin.DoesNotExist:
 		staff_login=None
+		active_staff = None
 	outlet_staff = OutletStaff.objects.filter(user=request.user)
-	if staff_login.user.id ==request.user.id:
+	if staff_login.user.id == request.user.id:
 
 		if staff_login:
 			context={
@@ -333,21 +334,30 @@ def AddOutletStaff(request):
 	return render (request, 'outlets/add_outletStaff.html',context)
 	
 
+
 @login_required
 @email_verified_required
 def DeleteOutletStaffView(request, pk):
-    outlet_staff = get_object_or_404(OutletStaff, pk=pk)
-    user=request.user
-    if outlet_staff.user.id == user.id:
-    
-    	outlet_staff_de=outlet_staff.delete()
+	outlet_staff = get_object_or_404(OutletStaff, pk=pk)
+	outlet_staff1=get_object_or_404(OutletStaffLogin, user=request.user)
+	print(outlet_staff1.outlet_staff.id)
+	print(outlet_staff.id)
+	
+	user=request.user
+	if outlet_staff.user.id == request.user.id:
+		if outlet_staff1.outlet_staff.id == outlet_staff.id :
+    	
 
-    	messages.success(request, 'Employee deleted successfully.')
-    	return redirect('outlet_staffs')
+			outlet_staff1.outlet_staff=None
+			outlet_staff1.save()
+		outlet_staff_de=outlet_staff.delete()
+
+		messages.success(request, 'Employee deleted successfully.')
+		return redirect('outlet_staffs')
     	#return redirect(request.META.get("HTTP_REFERER"))
     #return render(request, 'delete_measurement.html', {'measurement': measurement})
-    else:
-    	return render(request, '404.html')
+	else:
+		return render(request, '404.html')
 
 
 
@@ -397,7 +407,7 @@ def OutletCreatView(request):
 				
 				form_create.save()
 				messages.success(request, ('Outlet added successfully...'))
-				return redirect('accounts/settings_paged')
+				return redirect('settings_paged')
 
 	context={
 				'form':form,

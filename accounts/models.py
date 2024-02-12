@@ -76,7 +76,7 @@ class Outlets(models.Model):
 	city=models.CharField(max_length=100,null=True,blank=True)
 	address=models.CharField(max_length=100, null=True, blank=True)
 	phone_number=models.CharField(max_length=20, null=True, blank=True)
-	staff=models.CharField(max_length=50, null=False, blank=False)
+	#staff=models.CharField(max_length=50, null=False, blank=False)
 	Facebook= models.CharField(null=True, blank=True, max_length=100)
 	Instagram=models.CharField(null=True, blank=True, max_length=100)
 	outlet_logo=models.ImageField(null=True,blank=True,upload_to='pics/outlet_logo')

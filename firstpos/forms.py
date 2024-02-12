@@ -45,6 +45,13 @@ class ProductForm(forms.ModelForm):
         'stock_inventory' : forms.NumberInput(attrs={'class':'form-control'}),
 		#'description' :forms.TextInput(attrs={'class':'form-control'}),
 		}
+
+    def clean_stock_inventory(self):
+        stock_inventory = self.cleaned_data.get('stock_inventory')
+      
+        if stock_inventory in [None, '']:
+            return 0
+        return stock_inventory
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(ProductForm, self).__init__(*args, **kwargs)

@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 #from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm,PasswordResetForm,SetPasswordForm
-
+from django.core.exceptions import ValidationError
 #from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
@@ -148,15 +148,21 @@ class UserUpdateSettingsForm(forms.ModelForm):
 
 class OutletForm(forms.ModelForm):
     name=forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}))
-    email_address=forms.CharField(max_length=60, widget=forms.TextInput(attrs={'class':'form-control'}))
-    city=forms.CharField(max_length=50, required=False,widget=forms.TextInput(attrs={'class':'form-control'}))
-    address=forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
-    phone_number=forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
-    staff=forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class':'form-control'}))
+    email_address=forms.EmailField(max_length=60, widget=forms.EmailInput(attrs={'class':'form-control'}))
+    city=forms.CharField(max_length=50, required=True,widget=forms.TextInput(attrs={'class':'form-control'}))
+    address=forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    phone_number=forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    #staff=forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class':'form-control'}))
     Facebook=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     Instagram=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     outlet_logo=forms.ImageField(label='Image', required=False, widget=forms.ClearableFileInput(attrs={'class': 'form-control'}))
-    outlet_description=forms.CharField(max_length=20,  required=False,widget=forms.TextInput(attrs={'class':'form-control'}))
+    outlet_description=forms.CharField(max_length=200,  required=False,widget=forms.TextInput(attrs={'class':'form-control'}))
+
+    error_messages = {
+        'city': {'required': "Please enter your city."},
+        'address': {'required': "Please enter your address."},
+        'phone_number': {'required': "Please enter your phone number."}
+    }
     
     
     
@@ -170,11 +176,11 @@ class OutletStaffForm(forms.ModelForm):
 
     #outlet=forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class':'form-control'}))
     name=forms.CharField(max_length=60, widget=forms.TextInput(attrs={'class':'form-control'}))
-    address=forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
-    phone_number=forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
+    address=forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    phone_number=forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
     #status=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     email=forms.EmailField(label='Email',required=True, widget=forms.EmailInput(attrs={'class':'form-control'}))
-    Employee_id=forms.CharField(max_length=4,  required=False,widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    Employee_id=forms.CharField(max_length=4,  required=True,widget=forms.PasswordInput(attrs={'class':'form-control'}))
     description=forms.CharField(max_length=20,  required=False,widget=forms.TextInput(attrs={'class':'form-control'}))
 
     
@@ -223,6 +229,14 @@ class OutletStaffLoginForm(forms.ModelForm):
             self.fields['outlet_staff'].queryset = OutletStaff.objects.filter(user=user)
         self.fields['outlet_staff'].label = ''
         #self.fields['outlet_staff'].choices = [('', 'Select Outlet Staff')] + list(self.fields['outlet_staff'].choices)
+    def clean(self):
+        cleaned_data = super().clean()
+        outlet_staff = cleaned_data.get('outlet_staff')
+
+        if not outlet_staff:
+            raise ValidationError("Please select an outlet staff.")
+
+        return cleaned_data
 
 class StaffValidityForm(forms.Form):
 

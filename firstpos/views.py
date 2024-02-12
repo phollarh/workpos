@@ -324,6 +324,7 @@ def CreateReceipt(request, pk):
 		print(active_staff)
 	except OutletStaffLogin.DoesNotExist:
 		staff_login=None
+		active_staff = None
 	productList=ProductList.objects.filter(user_id=pk)
 	
 	if active_staff:
@@ -337,7 +338,7 @@ def CreateReceipt(request, pk):
 		
 		return render(request, 'create_receipt.html', context)
 	else:
-		messages.success(request, ('Please enter your staff details to continue ...'))
+		messages.success(request, ('Please log in the Employee section to continue ...'))
 		return render(request, 'accounts/settings_page.html')
 
 
