@@ -483,10 +483,10 @@ def SalesReceiptView(request, pk):
 					creatorpay.user=request.user
 
 					creatorpay.amount=Receipt.get_total_amount_onR()
-				
+					creatorpay.Payemntfor_receipt=Receipt
 				
 					creatorpay.save()
-					Receipt.payment=creatorpay
+					Receipt.paymentT=creatorpay
 					Receipt.issued=True
 					#products.paid=True
 					for product in products:
@@ -1058,7 +1058,7 @@ def generate_sales_receipt_pdf(request, pk):
 	time_style.fontSize=8
 	time_style.fontName="Times-Bold"
 
-	Amount_tenderd=" {0}".format( Receipt.payment.Amount_tenderd)  
+	Amount_tenderd=" {0}".format( Receipt.paymentT.Amount_tenderd)  
 	Amount_tenderd_style = getSampleStyleSheet()['Normal']
 	Amount_tenderd_style.fontSize=9
 	Amount_tenderd_style.alignment = 1
@@ -1108,8 +1108,8 @@ def generate_sales_receipt_pdf(request, pk):
 	
 	receipt_data_summary = [["","Mode",""]]
 	receipt_data_summary.append([f"Total Amount ",f"",Receipt.get_total_amount_onR()])
-	receipt_data_summary.append([f" Amount Tendered",f"{Receipt.payment.payment_option}",(Amount_tenderd_paragraph)])
-	receipt_data_summary.append([f" Change Due",f"",Receipt.payment.balance()])
+	receipt_data_summary.append([f" Amount Tendered",f"{Receipt.paymentT.payment_option}",(Amount_tenderd_paragraph)])
+	receipt_data_summary.append([f" Change Due",f"",Receipt.paymentT.balance()])
 	receipt_table_summary = Table(receipt_data_summary, colWidths=[1.3*inch, 0.3*inch, 0.6*inch])
 	receipt_table_summary.setStyle(TableStyle([
 		('BACKGROUND', (0, 0), (-1, 0), colors.white),

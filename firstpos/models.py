@@ -97,7 +97,7 @@ class SalesReceipt(models.Model):
 	Remarks=models.TextField(max_length=200, null=True, blank=True)
 	date=models.DateTimeField(default=timezone.now)
 	payment_option=models.ForeignKey('PaymentOptions', on_delete=models.SET_NULL, blank=True, null=True)
-	payment= models.ForeignKey('Payment', on_delete=models.SET_NULL, blank=True, null=True)
+	paymentT= models.ForeignKey('Payment', on_delete=models.SET_NULL, blank=True, null=True)
 	Note=models.CharField(max_length=100, blank=False, null=False)
 	
 	issued=models.BooleanField(default=False)
@@ -129,7 +129,7 @@ class Measurement(models.Model):
 class Payment(models.Model):
      user=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
      payment_option=models.ForeignKey('PaymentOptions',on_delete=models.SET_NULL, blank=True, null=True)
-     products=models.ForeignKey(ProductList, on_delete=models.SET_NULL, blank=True, null=True)
+     Payemntfor_receipt=models.ForeignKey(SalesReceipt, on_delete=models.SET_NULL, blank=True, null=True)
      Amount_tenderd=models.DecimalField(default=0, decimal_places=3, max_digits=8, blank=True, null=True)
      
      time=models.DateTimeField(auto_now=True)

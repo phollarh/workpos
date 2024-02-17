@@ -217,7 +217,7 @@ class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
 
-        exclude = ('user', 'date','products','amount',)
+        exclude = ('user', 'date','products','amount','Payemntfor_receipt',)
 
         widgets = {
 

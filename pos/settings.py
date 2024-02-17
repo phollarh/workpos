@@ -21,14 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
-
+#SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = 'django-insecure-oy&$uxkrsdom_#3((ve&7mgmx^l@*7%58yto^$ol$0)+@(oxj+'
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = False
-DEBUG = os.environ.get("DEBUG", "False").lower == "true"
+DEBUG = True
+#DEBUG = os.environ.get("DEBUG", "False").lower == "true"
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
-
+#ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS= []
 
 # Application definition
 
@@ -93,8 +93,8 @@ DATABASES = {
         
         }
 }
-database_url = os.environ.get("DATABASE_URL")
-DATABASES["default"] = dj_database_url.parse(database_url)
+#database_url = os.environ.get("DATABASE_URL")
+DATABASES["default"] = dj_database_url.parse('postgres://firstpos_user:vkNYFxwWTsaKO5Tdwy4Puz7ykxHi8UZl@dpg-cn4fd8fqd2ns73em07cg-a.oregon-postgres.render.com/firstpos')
 
 
 
