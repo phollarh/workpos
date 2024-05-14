@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                    
+                    <div class="container ">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        
+
+                            
+                    <div class="row">
+                            <div class="col-8">
+                                <div class="container-fluid px-4">
+                                    <div class="card bg bg-primary text-white w-100 mb-3">
+                                        <div class="card-header text-center">
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                 <center>    <img src="{{ outlet.outlet_logo.url }}" class="rounded-circle " alt="User Image" style="width: 350px; height: 350px;"></center>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    
+                                            <hr class="bg-danger border-warning">
+
+                                            <div class="card bg bg-primary  w-100 mb-3">
+                                                <div class="container-fluid text-white"><br><br>
+                                                    <form method="POST" enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <div class="text-white mb-3">
+                                                            {{ form.as_p}}
+                                                            {{form.media }}
+                                                        </div>
+                                                       
+                                                        <center>
+                                                     <button type="submit" class="btn btn-outline-light">Change Outlet Logo</button>
+                                                        </center>
+                                                    </form>
+                                                  <br>
+                                                </div>
+						<div class="card-footer">
+							<a href="{% url 'settings_pagedup' outlet.pk %}"><button> <i class="bi bi-arrow-left"></i> &nbsp;Back</button></a>
+						</div>
+                                            </div>
+
+
+
+
+                                </div>
+                            </div>
+                                    
+                    </div>
+                    
+                </main>
+{% endblock %}

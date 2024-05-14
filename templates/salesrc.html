@@ -2,19 +2,20 @@
 {% load static %}
 {% block content %}
                 <main>
-                    {% if totalQ %}
-                    <a href="{% url 'salesrcd2' pk=request.user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
-                        <button class="btn btn-outline-primary text-danger">
-                    
-                        {{totalQ}}
-                        </button></i></a>&nbsp;&nbsp;
-                    {% else %}
-                    <a href="{% url 'create_receipt' user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
-                        <button class="btn btn-outline-primary text-danger">
-                        
+                       <main>
+            {% if totalQ %}
+            
+                <a href="{{salesrcd2_url}}"> <i class="bi bi-cart4 fs-1 float-end text-danger">
+                    <button class="btn btn-outline-primary text-danger">
+                        {{totalQ}}       
+                    </button></i>
+                </a>&nbsp;&nbsp;
+            {% else %}
+                <a href="{% url 'create_receipt' user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+                    <button class="btn btn-outline-primary text-danger">
                         0
-                        </button></i></a>&nbsp;&nbsp;
-                    {% endif %}
+                    </button></i></a>&nbsp;&nbsp;
+            {% endif %}
             
                     <div class="container">
                         {% if messages %}

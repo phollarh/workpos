@@ -1,7 +1,7 @@
 from django.contrib import admin
 #from django.contrib.auth.models import Group
 #from .models import Profile
-from .models import CustomUser,Outlets,OutletStaff,OutletStaffLogin
+from .models import CustomUser,Outlets,OutletStaff,OutletStaffLogin,Profile
 
 
 # Register your models here.
@@ -17,6 +17,8 @@ admin.site.register(CustomUser)
 admin.site.register(Outlets)
 admin.site.register(OutletStaff)
 admin.site.register(OutletStaffLogin)
+admin.site.register(Profile)
+
 
 
 

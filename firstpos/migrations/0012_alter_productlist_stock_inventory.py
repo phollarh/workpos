@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='productlist',
             name='stock_inventory',
-            field=models.DecimalField(blank=True, decimal_places=1, default=0, max_digits=100, null=True),
+            field=models.DecimalField(blank=True, decimal_places=1, default=0, max_digits=50, null=True),
         ),
     ]

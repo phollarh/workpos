@@ -24,21 +24,21 @@ from collections import OrderedDict
 from django.template.loader import get_template
 from django.template import Context
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+import json
 
 @login_required
 @email_verified_required
 def HomeView(request):
 	producto_list=ProductListO.objects.filter(user=request.user, paid=False)
 	product=ProductList.objects.filter(user=request.user)
-	
+	latest_receipt = SalesReceipt.objects.filter(user=request.user, issued=False).order_by('-id').first()
+	salesrcd2_url = None
+	if latest_receipt:
+		pk = latest_receipt.pk
 
-	totalQ=0
-	for producto in producto_list:
-		productoQ={producto.Quantity}
-		
-		for x in productoQ:
-			totalQ += int(x)
+		salesrcd2_url = reverse('salesrcd2', kwargs={'pk': pk})
+
+	
 
 	current_date = timezone.now().date()
 	months_in_year = list(calendar.month_name)[1:]
@@ -112,15 +112,15 @@ def HomeView(request):
 		'data_monthly':data_for_months,
 		'labels':days_of_week,
 		'data':data_for_days,
-		'totalQ':totalQ,
 		'producto_list':producto_list,
-	
+		'Receipt': Receipt,
 		"total_priceIna_forday":total_priceIna_forday,
 		"total_priceIna_fordayCost":total_priceIna_fordayCost,
 		"Profit":Profit,
 		"current_date":current_date,
 		"product_sales":product_sales,
-		"product":product
+		"product":product,
+		"salesrcd2_url":salesrcd2_url
 		
 		}
 
@@ -317,6 +317,7 @@ def CategoryDeleteView(request, pk):
 @login_required
 @email_verified_required
 def CreateReceipt(request, pk):
+
 	try:
 
 		staff_login = OutletStaffLogin.objects.get(user=request.user.pk) 
@@ -326,13 +327,22 @@ def CreateReceipt(request, pk):
 		staff_login=None
 		active_staff = None
 	productList=ProductList.objects.filter(user_id=pk)
+	latest_receipt = SalesReceipt.objects.filter(user=request.user, issued=False).order_by('-id').first()
+	salesrcd2_url = None
+	if latest_receipt:
+		pk = latest_receipt.pk
+
+		salesrcd2_url = reverse('salesrcd2', kwargs={'pk': pk})
 	
 	if active_staff:
+	 
+
 		
 		context={
 					'staff_login':staff_login,
 					'active_staff':active_staff,
 					'productList':productList,
+					'salesrcd2_url':salesrcd2_url
 				
 				}
 		
@@ -341,8 +351,32 @@ def CreateReceipt(request, pk):
 		messages.success(request, ('Please log in the Employee section to continue ...'))
 		return render(request, 'accounts/settings_page.html')
 
+@login_required		
+@email_verified_required
+def add_product(request):
+	if request.POST.get('action')=='post':
 
-	
+		product_id = request.POST.get('product_id')
+
+		product = ProductList.objects.get(id=product_id)
+		producto=ProductListO.objects.create(
+			user=request.user,
+			product=product,
+			Quantity=1
+
+			)
+		producto.save()
+		receipt=SalesReceipt.objects.filter(user=request.user, issued=False).first()
+		if not receipt:
+			receipt=SalesReceipt.objects.create(user=request.user)
+		receipt.products.add(producto)
+		receipt_id = receipt.id
+				
+
+		response = {'product_details': producto.Quantity, 'receipt_id': receipt_id}
+		return JsonResponse(response)
+
+
 	
 @login_required
 @email_verified_required
@@ -372,10 +406,11 @@ def CreateReceiptV(request, pk):
 					Receipt_O=Receipt[0]
 					Receipt_O.save()
 					Receipt_O.products.add(creator)
+					return redirect('salesrcd2', pk = Receipt_O.pk)
 				else:
 					Receipt=SalesReceipt.objects.create(user=current_user)
 					Receipt.products.add(creator)
-				return redirect('salesrcd2', pk=request.user.id)
+					return redirect('salesrcd2', pk = Receipt.pk)
 				#return redirect('create_receiptV_update', pk=creator.pk)
 		context={
 			'form':form,
@@ -434,7 +469,7 @@ def CreateReceiptVUpdate(request, pk):
 				else:
 					Receipt=SalesReceipt.objects.create(user=current_user)
 					Receipt.products.add(creatorp)
-				return redirect('salesrcd2', pk=request.user.id)
+				return redirect('salesrcd2', pk=Receipt_O.pk)
 		
 			
 
@@ -454,10 +489,47 @@ def CreateReceiptVUpdate(request, pk):
 
 @login_required		
 @email_verified_required
-def SalesReceiptView(request, pk):
+def Change_Qreceipt(request):
+	if request.method == 'POST' and request.POST.get('action') == 'post':
+		receipt_id = int(request.POST.get('receipt_id'))
+		product_id = request.POST.get('product_id')
+		receipt_qty = int(request.POST.get('receipt_Qty'))
+		sale_receipt = SalesReceipt.objects.get(id=receipt_id, issued= False)
+		for product in sale_receipt.products.all():
+			if str(product.id) == str(product_id):
+
+				product.Quantity = receipt_qty
+				product.save()
+
+		response_data = {'qty': receipt_qty, }
+		return JsonResponse(response_data)
+	else:
+		return JsonResponse({'error': 'Invalid request method or missing action'})
+# def Change_Qreceipt(request):
+# 	if request.method == 'POST' and request.POST.get('action') == 'post':
+# 	#if request.POST.get('action') == 'post' :
+# 		receipt_id = int(request.POST.get('receipt_Qty'))
+# 		product_Id = int(request.POST.get('product_Id'))
+# 		receipt_Qty = int(request.POST.get('receipt_Qty'))
+# 		print("Product ID:", product_Id)
+# 		print("Receipt Quantity:", receipt_Qty)
 	
-	products=ProductListO.objects.filter(user__id=pk, paid=False)
-	Receipt=SalesReceipt.objects.get(user__id=pk, issued=False)
+		
+# 		response = JsonResponse({'qty' : receipt_Qty })
+# 		return response
+
+		# except ObjectDoesNotExist:
+		# 	return render(request, '404.html')
+
+
+@login_required		
+@email_verified_required
+def SalesReceiptView(request, pk):
+	Receipt = get_object_or_404(SalesReceipt, id=pk, issued=False)
+	products=ProductListO.objects.filter(user=request.user, paid=False).order_by('-date')
+	products = Receipt.products.order_by('-date')
+	
+	
 	
 	
 
@@ -469,7 +541,7 @@ def SalesReceiptView(request, pk):
 			formpay = PaymentForm(initial={'Amount_tenderd': initial_amount})
 
 
-			print(initial_amount)
+	
 	
 
 			
@@ -495,7 +567,6 @@ def SalesReceiptView(request, pk):
 
 					Receipt.save()
 				
-				print('sucess')
 				return redirect('create_receiptS', pk=Receipt.pk)
 				
 					
@@ -506,7 +577,9 @@ def SalesReceiptView(request, pk):
 				
 			#'form':form,
 			'Receipt':Receipt,
-			'formpay':formpay
+			'formpay':formpay,
+			'receipt_pk': Receipt.id,
+			'products':products
 
 			}
 			return render(request, 'salesrcd2.html', context )
@@ -516,6 +589,9 @@ def SalesReceiptView(request, pk):
 
 	else:
 		return render(request, '401.html')
+
+
+
 
 
 @login_required
@@ -730,6 +806,11 @@ class SalesRcListsView(LoginRequiredMixin,View):
 
 
 
+		latest_receipt = SalesReceipt.objects.filter(user=self.request.user, issued=False).order_by('-id').first()
+		salesrcd2_url = None
+		if latest_receipt:
+			pk = latest_receipt.pk
+			salesrcd2_url = reverse('salesrcd2', kwargs={'pk': pk})
 
 		start_date_str = self.request.GET.get('start_date')
 		end_date_str = self.request.GET.get('end_date')
@@ -794,6 +875,7 @@ class SalesRcListsView(LoginRequiredMixin,View):
 					"Receipt":Receipt,
 					"Receipts":Receipts,
 					"number_of_pages":number_of_pages,
+					'salesrcd2_url':salesrcd2_url,
 					#"filter_params":filter_params,
 
 
@@ -817,6 +899,7 @@ def SalesView(request):
 
 	pro = ProductList.objects.filter(
 		productlisto__user=request.user,
+		
 		
 			).distinct()
 	totalQ_per_product = []
@@ -893,6 +976,7 @@ def SalesView_byProduct(request, pk):
 		product=pro,
 		date__date__gte=start_date,
 		date__date__lte=end_date,
+		paid=True,
 		)
 
 	h = item.count()
@@ -1165,6 +1249,24 @@ def generate_sales_receipt_pdf(request, pk):
 	buffer.seek(0)
 	response.write(buffer.read())
 	buffer.close()
+	return response
+
+
+
+
+from django.template.loader import render_to_string
+
+
+def generate_sales_receipt_text(request, pk):
+	receipt = get_object_or_404(SalesReceipt, pk=pk, issued=True)
+	outlet=get_object_or_404(Outlets, user=request.user)
+	attending_staff=get_object_or_404(OutletStaffLogin, user=request.user)
+	html_content = render_to_string('receipt_text.html', {'receipt': receipt, 'outlet':outlet, 'attending_staff':attending_staff})
+
+    
+	response = HttpResponse(content_type='text/html')
+	response.write(html_content)
+
 	return response
 
 

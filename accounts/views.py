@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
-from .models import CustomUser,Outlets,OutletStaff,OutletStaffLogin
+from .models import CustomUser,Outlets,OutletStaff,OutletStaffLogin,Profile
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
@@ -13,12 +13,14 @@ from django.core.mail import EmailMessage
 #from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from .tokens import account_activation_token
-from .forms import UserUpadetEmailForm,EmailAuthenticationForm,UserUpdateForm,UserRegisterForm,PasswordResetForm1,SetPasswordForm1,UserUpdateSettingsForm,OutletForm,OutletStaffForm,OutletStaffLoginForm,StaffValidityForm
+from .forms import UserUpadetEmailForm,EmailAuthenticationForm,UserUpdateForm,UserRegisterForm,PasswordResetForm1,SetPasswordForm1,UserUpdateSettingsForm,OutletForm,OutletStaffForm,OutletStaffLoginForm,StaffValidityForm,ProfileUpdateForm,change_outlet_logoForm
 from .decorators import email_verified_required
 from django.db.models.query_utils import Q
 from django.contrib.auth.decorators import login_required
 from .decorators import email_verified_required
 from django.views.generic import View, ListView,CreateView,DetailView,UpdateView,View,DeleteView
+from django.http import JsonResponse
+import json
 
 
 
@@ -127,12 +129,13 @@ def Register(request):
 	form=UserRegisterForm
 	user=get_user_model()
 	if request.method=='POST':
+		phone = request.POST.get('phone')
 		form=UserRegisterForm(request.POST)
 		if form.is_valid():
-			
 			user=form.save(commit=False)
-			user.is_active=True
+			user.is_active=True 
 			user.email_verified=False
+			user.phone_number = phone
 			user.save()
 			email=form.cleaned_data['email']
 			username= form.cleaned_data['email']
@@ -188,7 +191,34 @@ def logout_user(request):
 
 
 
+@login_required
+@email_verified_required
+def Update_profile_picture(request, pk):
 
+
+	profile=get_object_or_404(Profile, pk=pk)
+
+	if profile.profile.pk == request.user.id:
+
+		form=ProfileUpdateForm(request.POST or None,request.FILES or None, instance=profile)
+		if request.method=="POST":
+			form=ProfileUpdateForm(request.POST or None,request.FILES or None, instance=profile)
+			if form.is_valid():
+				user_p=form.save(commit=False)
+				user_p.profile=request.user
+				user_p.save()
+				return redirect(request.META.get("HTTP_REFERER"))
+
+		
+
+		context={
+				"form":form,
+				'profile':profile,
+				
+		}
+		return render(request, 'accounts/profilepicture.html', context)
+	else:
+		return render(request, '401.html')
 
 @login_required
 @email_verified_required
@@ -196,22 +226,27 @@ def Update_ViewProfile(request, pk):
 
 
 	user=get_object_or_404(CustomUser, pk=pk)
+
 	form=UserUpdateForm(request.POST or None, instance=user)
 	if user.id == request.user.id:
 
 		form=UserUpdateForm(request.POST or None, instance=user)
 		if request.method=="POST":
-			form=UserUpdateForm(request.POST or None,request.FILES, instance=user)
+			form=UserUpdateForm(request.POST or None, instance=user)
 			if form.is_valid():
 				user_p=form.save(commit=False)
 				user_p.user=request.user
 				user_p.save()
 				return redirect(request.META.get("HTTP_REFERER"))
+
+		
+
 		context={
 				"form":form,
 				'user':user,
+				'user_Id':user.id
 		}
-		return render(request, 'accounts/My_Profile.html', context)
+		return render(request, 'accounts/profileView.html', context)
 	else:
 		return render(request, '401.html')
 
@@ -230,25 +265,24 @@ def Settings_Page(request):
 	
 	except OutletStaffLogin.DoesNotExist:
 		staff_login=None
-		#active_staff=None
 
 	outlet_staff = OutletStaff.objects.filter(user=request.user)
-	#if staff_login and staff_login.user.id == request.user.id:
+	if staff_login.user.id ==request.user.id:
 
-	if staff_login:
-		context={
+		if staff_login:
+			context={
 				'active_staff':active_staff,
 				'staff_login':staff_login,
 				'outlet_staff':outlet_staff,
 				}
 
-		return render(request, 'accounts/settings_page.html', context)
+			return render(request, 'accounts/settings_page.html', context)
 
+		else:
+
+			return render(request, 'accounts/settings_page.html')
 	else:
-
-		return render(request, 'accounts/settings_page.html')
-#	else:
-#		return render(request, '404.html')
+		return render(request, '404.html')
 
 
 @login_required
@@ -289,9 +323,9 @@ def OutletStaffUpdateView(request, pk):
 	outlet = get_object_or_404(OutletStaff, pk=pk)
 	if outlet.user.id == request.user.id:
 
-		form=OutletStaffForm(request.POST or None, instance=outlet, user=request.user)
+		form=OutletStaffForm(request.POST or None,request.FILES or None, instance=outlet, user=request.user)
 		if request.method=="POST":
-			form=OutletStaffForm(request.POST or None, instance=outlet, user=request.user)
+			form=OutletStaffForm(request.POST or None, request.FILES or None,instance=outlet, user=request.user)
 			if form.is_valid():
 				user_outlet=form.save(commit=False)
 				user_outlet.user=request.user
@@ -299,6 +333,7 @@ def OutletStaffUpdateView(request, pk):
 				return redirect(request.META.get("HTTP_REFERER"))
 		context={
 				"form":form,
+				"outlet":outlet,
 		}
 		return render(request, 'outlets/outlet_staffsUp.html', context)
 	else:
@@ -311,11 +346,11 @@ def AddOutletStaff(request):
 	outlet=OutletStaff.objects.filter(user=request.user)
 
 
-	form=OutletStaffForm(request.POST, user=request.user)
+	form=OutletStaffForm(request.POST, request.FILES or None, user=request.user)
 
 	
 	if request.method=='POST':
-		form= OutletStaffForm(request.POST or None, user=request.user)
+		form= OutletStaffForm(request.POST or None,request.FILES or None, user=request.user)
 		if form.is_valid():
 			form_staff=form.save(commit=False)
 			form_staff.user=request.user
@@ -332,8 +367,7 @@ def AddOutletStaff(request):
 				'outlet':outlet,
 
 				}
-	return render (request, 'outlets/add_outletStaff.html',context)
-	
+	return render (request, 'outlets/add_outletStaff.html',context)	
 
 @login_required
 @email_verified_required
@@ -381,11 +415,11 @@ def OutletStaffLogout(request, pk):
 @email_verified_required
 def Settings_PageD_Update(request, pk):
 	outlet=get_object_or_404(Outlets, pk=pk)
-	form=UserUpdateSettingsForm(request.POST or None, instance=outlet)
+	form=UserUpdateSettingsForm(request.POST or None, request.FILES or None, instance=outlet)
 	if outlet.user.id == request.user.id:
 
 		if request.method=="POST":
-			form=UserUpdateSettingsForm(request.POST or None, instance=outlet)
+			form=UserUpdateSettingsForm(request.POST or None,request.FILES or None, instance=outlet)
 			if form.is_valid():
 				outletP=form.save(commit=False)
 				outletP.user=request.user
@@ -401,13 +435,33 @@ def Settings_PageD_Update(request, pk):
 		}
 
 	return render(request, 'accounts/settings_pagedup.html',context)
+def change_outlet_logo(request, pk):
+	outlet = get_object_or_404(Outlets, pk=pk)
+	form = change_outlet_logoForm(request.POST or None , request.FILES or None)
+	if request.method == 'POST':
+		form = change_outlet_logoForm(request.POST or None, request.FILES or None, instance=outlet)
+		if form.is_valid():
+			outletp=form.save(commit=False)
+			outletp.user = request.user
+			outletp.save()
+			return redirect(request.META.get("HTTP_REFERER"))
+	context={
+			"form":form,
+			"outlet":outlet,
+	}
+
+	return render(request, 'accounts/change_outlet_logo.html', context)
+
+@login_required
+@email_verified_required
+
 @login_required
 @email_verified_required
 def OutletCreatView(request):
 	
 	outlet=Outlets.objects.filter(user=request.user)
 	
-	form=OutletForm(request.POST)
+	form=OutletForm(request.POST or None, request.FILES or None)
 	if outlet:
 
 		messages.success(request, ('You can only add one Outlet...'))
@@ -416,7 +470,7 @@ def OutletCreatView(request):
 	else:
 
 		if request.method=='POST':
-			form= OutletForm(request.POST or None)
+			form= OutletForm(request.POST or None,request.FILES or None)
 			if form.is_valid():
 				form_create=form.save(commit=False)
 				form_create.user=request.user
@@ -476,7 +530,7 @@ def password_reset_request(request):
             associated_user = get_user_model().objects.filter(Q(email=user_email)).first()
             if associated_user:
                 subject = "Password Reset request"
-                message = render_to_string("template_reset_password.html", {
+                message = render_to_string("accounts/template_reset_password.html", {
                     'user': associated_user,
                     'domain': get_current_site(request).domain,
                     'uid': urlsafe_base64_encode(force_bytes(associated_user.pk)),
@@ -500,7 +554,7 @@ def password_reset_request(request):
             else:
             	messages.error(request, "Email does not exists in our database")
 
-            return redirect('accounts/login')
+            return redirect('login')
 
 
 
@@ -542,35 +596,35 @@ def passwordResetConfirm(request, uidb64, token):
 def OutletStaffLoginView(request):
 	#outlet_staff1=get_object_or_404(OutletStaff, user=request.user)
 	outlet_staff = get_object_or_404(OutletStaffLogin, user=request.user)
-	#if outlet_staff.user.id == request.user.id:
-	form_l=StaffValidityForm(request.POST or None)
-	form=OutletStaffLoginForm(request.POST or None, instance=outlet_staff, user=request.user)
-	if request.method=="POST":
-		form=OutletStaffLoginForm(request.POST or None, instance=outlet_staff, user=request.user)
+	if outlet_staff.user.id == request.user.id:
 		form_l=StaffValidityForm(request.POST or None)
-		if form.is_valid() and form_l.is_valid():
-			employee_id_entered = form_l.cleaned_data.get('Unique_pin')
+		form=OutletStaffLoginForm(request.POST or None, instance=outlet_staff, user=request.user)
+		if request.method=="POST":
+			form=OutletStaffLoginForm(request.POST or None, instance=outlet_staff, user=request.user)
+			form_l=StaffValidityForm(request.POST or None)
+			if form.is_valid() and form_l.is_valid():
+				employee_id_entered = form_l.cleaned_data.get('Unique_pin')
 
-			if OutletStaff.objects.filter(Employee_id=employee_id_entered).exists():
-			 	user_outlet = form.save(commit=False)
+				if OutletStaff.objects.filter(Employee_id=employee_id_entered).exists():
+				 	user_outlet = form.save(commit=False)
 
-			 	user_outlet.user = request.user
-			 	user_outlet.save()
-			 	messages.success(request, 'sign in successful')
-			 	return redirect('staff_Details', pk=outlet_staff.pk)
-			else:
-			 	messages.error(request, 'Invalid Employee ID Details')
+				 	user_outlet.user = request.user
+				 	user_outlet.save()
+				 	messages.success(request, 'sign in successful')
+				 	return redirect('staff_Details', pk=outlet_staff.pk)
+				else:
+				 	messages.error(request, 'Invalid Employee ID Details')
 
 				
 				
 
-	context={
+		context={
 				"form":form,
 				"form_l":form_l,
 		}
-	return render(request, 'outlets/outlet_staffsLogin.html', context)
-	#else:
-	#	return render(request, 'outlets/outlet_staffsLogin.html')
+		return render(request, 'outlets/outlet_staffsLogin.html', context)
+	else:
+		return render(request, '401.html')
 
 
 def OutletStaffDView(request, pk):
@@ -589,5 +643,6 @@ def OutletStaffDView(request, pk):
 		return render(request,'outlets/outlet_staffdetails.html', context)
 	else:
 		return render(request, '404.html')
+
 
 

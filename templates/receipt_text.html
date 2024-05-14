@@ -1,0 +1,45 @@
+<div class="container" style="width: 80%; padding: 20px;">
+        <center>
+        <div class="text-center">
+            <div class="receipt-header" style="font-weight: bold;">
+                <p><h4>{{ outlet.name|upper }}</h4></p>
+                <p><h5>{{ outlet.address }}</h5></p>
+                <p><h5>{{ outlet.phone_number }}</h5></p>
+            </div>
+            <hr style="border-top: 2px solid ;">
+
+            <div class="receipt-header">
+                <h6>Sale Receipt: #0{{ receipt.id }}</h6>
+            </div>
+            <div class="receipt-item">
+                <h6>Date: {{ receipt.date }}</h6>
+            </div>
+            <div class="receipt-item">
+                <h6>Issued by: {{ attending_staff.outlet_staff.name }}</h6>
+            </div>
+            <hr style="border-top: 2px solid;">
+            <div class="receipt-item" style="font-weight: bold;">
+                <h5 >Items:</h5>
+                <ul>
+                    {% for product in receipt.products.all %}
+                    <li><h5>{{ product.product.product_name }}: {{ product.Quantity }} X {{ product.product.selling_price }} = {{product.price}}<h5/></li>
+                    {% endfor %}
+                </ul>
+                <hr style="border-top: 2px solid;">
+            </div>
+            <div class="receipt-item">
+                <h5>Total Amount: {{ receipt.get_total_amount_onR }}</h5>
+            </div>
+            <div class="receipt-item">
+                <h5>Amount Tendered: {{ receipt.paymentT.Amount_tenderd }}&nbsp;{{ receipt.paymentT.payment_option }}</h5>
+            </div>
+            <div class="receipt-item">
+                <h5>Change Due: {{ receipt.paymentT.balance }}</h5>
+            </div>
+            <hr style="border-top: 2px solid;">
+            <div class="receipt-item">
+                <h6>Thank you for your patronage!</h6>
+            </div><br><br><hr>
+        </div>
+</center>
+</div>

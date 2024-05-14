@@ -4,10 +4,12 @@ from django.contrib.auth import get_user_model
 #from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm,PasswordResetForm,SetPasswordForm
 from django.core.exceptions import ValidationError
+from django_countries.fields import CountryField
 #from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
-from .models import Outlets, OutletStaff, OutletStaffLogin
+from .models import Outlets, OutletStaff, OutletStaffLogin,Profile
+from phonenumber_field.formfields import PhoneNumberField
 
 class EmailAuthenticationForm(AuthenticationForm):
    # email = forms.EmailField(label='Email', required=True,widget=forms.EmailInput(attrs={'class':'form-control'}))
@@ -47,6 +49,7 @@ class EmailAuthenticationForm(AuthenticationForm):
 
 
 class UserRegisterForm(UserCreationForm):
+
     first_name=forms.CharField(max_length=20,label='First Name', widget=forms.TextInput(attrs={'class':'form-control'}))
     last_name =forms.CharField(max_length=20,label='Last Name', widget=forms.TextInput(attrs={'class':'form-control'}))
     email =forms.EmailField(label='Email',required=True, widget=forms.EmailInput(attrs={'class':'form-control'}))
@@ -54,7 +57,7 @@ class UserRegisterForm(UserCreationForm):
     
     class Meta:
         model = get_user_model()
-        fields = ('first_name','last_name','email','username','password1','password2')
+        fields = ('first_name','last_name','email','username','password1','password2',)
 
     #def save(self, commit=True):
      #   user = super(UserRegisterForm, self).save(commit=False)
@@ -86,6 +89,7 @@ class UserUpadetEmailForm(UserChangeForm):
     #first_name=forms.CharField(max_length=20,label='First Name', widget=forms.TextInput(attrs={'class':'form-control'}))
     #last_name =forms.CharField(max_length=20,label='Last Name', widget=forms.TextInput(attrs={'class':'form-control'}))
     email =forms.EmailField(label='Email',required=True, widget=forms.EmailInput(attrs={'class':'form-control'}))
+    password = None
     
     
     class Meta:
@@ -93,20 +97,27 @@ class UserUpadetEmailForm(UserChangeForm):
         fields = ('email',)
 
 class UserUpdateForm(UserChangeForm):
-    first_name=forms.CharField(max_length=20,label='First Name', widget=forms.TextInput(attrs={'class':'form-control'}))
-    last_name =forms.CharField(max_length=20,label='Last Name', widget=forms.TextInput(attrs={'class':'form-control'}))
+    first_name=forms.CharField(max_length=30,required=True,label='First Name', widget=forms.TextInput(attrs={'class':'form-control'}))
+    last_name =forms.CharField(max_length=30,required=True, label='Last Name', widget=forms.TextInput(attrs={'class':'form-control'}))
     email =forms.EmailField(label='Email',required=True, widget=forms.EmailInput(attrs={'class':'form-control'}))
     username =forms.CharField(label='username',required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
-    image = forms.ImageField(label='Image', required=False, widget=forms.ClearableFileInput(attrs={'class': 'form-control'}))
+    phone_number =forms.CharField(max_length=20,required=True, label='Phone Number ', widget=forms.TextInput(attrs={'class':'form-control'}))
     password=None
     
     class Meta:
         model = get_user_model()
-        fields = ('first_name','last_name','email','username','image')
+        fields = ('first_name','last_name','email','phone_number','username')
+class ProfileUpdateForm(UserChangeForm):
+    password = None
+    class Meta:
+        model = Profile
+        fields = ('image',)
+    image = forms.ImageField(label='Image', widget=forms.ClearableFileInput(attrs={'class': 'form-control'}))
 
 class PasswordResetForm1(PasswordResetForm):
     def __init__(self, *args, **kwargs):
         super(PasswordResetForm1, self).__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs['class'] = 'form-control'
 
 class SetPasswordForm1(SetPasswordForm):
     class Meta:
@@ -118,13 +129,14 @@ class SetPasswordForm1(SetPasswordForm):
         self.fields['new_password1'].widget.attrs['class'] = 'form-control'
         self.fields['new_password1'].widget.attrs['placeholder'] = 'New Password'
         self.fields['new_password1'].label = ''
-        self.fields['new_password1'].help_text = '<ul class="form-text text-muted small"><li>Your password can\'t be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can\'t be a commonly used password.</li><li>Your password can\'t be entirely numeric.</li></ul>'
+        self.fields['new_password1'].help_text = '<ul class="form-text text-white text-muted small"><li>Your password can\'t be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can\'t be a commonly used password.</li><li>Your password can\'t be entirely numeric.</li></ul>'
+        self.fields['new_password1'].widget.attrs['style'] = 'color:white;'
 
         self.fields['new_password2'].widget.attrs['class'] = 'form-control'
         self.fields['new_password2'].widget.attrs['placeholder'] = 'Confirm Password'
         self.fields['new_password2'].label = ''
-        self.fields['new_password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'
-
+        self.fields['new_password2'].help_text = '<span class="form-text text-white text-muted"><small>Enter the same password as before, for verification.</small></span>'
+        self.fields['new_password2'].widget.attrs['style'] = 'color:white;'
 
 class UserUpdateSettingsForm(forms.ModelForm):
     name=forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -136,7 +148,7 @@ class UserUpdateSettingsForm(forms.ModelForm):
     Facebook=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     Instagram=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     outlet_logo=forms.ImageField(label='Image', required=False, widget=forms.ClearableFileInput(attrs={'class': 'form-control'}))
-    outlet_description=forms.CharField(max_length=20,  required=False,widget=forms.TextInput(attrs={'class':'form-control'}))
+    outlet_description=forms.CharField(max_length=20,  required=False,widget=forms.Textarea(attrs={'class':'form-control','rows': 5, 'cols': 50}))
     
     
     
@@ -145,6 +157,12 @@ class UserUpdateSettingsForm(forms.ModelForm):
         model = Outlets
         exclude = ('user',)
 
+class change_outlet_logoForm(forms.ModelForm):
+
+    class Meta:
+        model = Outlets
+        fields = ('outlet_logo',)
+    outlet_logo = forms.ImageField(label='Image', widget=forms.ClearableFileInput(attrs={'class': 'form-control'}))
 
 class OutletForm(forms.ModelForm):
     name=forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -156,7 +174,7 @@ class OutletForm(forms.ModelForm):
     Facebook=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     Instagram=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     outlet_logo=forms.ImageField(label='Image', required=False, widget=forms.ClearableFileInput(attrs={'class': 'form-control'}))
-    outlet_description=forms.CharField(max_length=20,  required=False,widget=forms.TextInput(attrs={'class':'form-control'}))
+    outlet_description=forms.CharField(max_length=20,  required=False,widget=forms.Textarea(attrs={'class':'form-control', 'rows':5, 'cols': 50}))
     
     
    
@@ -176,7 +194,7 @@ class OutletStaffForm(forms.ModelForm):
     #status=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     email=forms.EmailField(label='Email',required=True, widget=forms.EmailInput(attrs={'class':'form-control'}))
     Employee_id=forms.CharField(max_length=4,  required=True,widget=forms.PasswordInput(attrs={'class':'form-control'}))
-    description=forms.CharField(max_length=20,  required=False,widget=forms.TextInput(attrs={'class':'form-control'}))
+    description=forms.CharField(max_length=20,  required=False,widget=forms.Textarea(attrs={'class':'form-control', 'rows' : 5, 'cols' : 50}))
 
     
     

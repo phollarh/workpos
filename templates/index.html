@@ -3,7 +3,8 @@
 {% block content %}
                 <main>
             {% if totalQ %}
-                <a href="{% url 'salesrcd2' pk=request.user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+            
+                <a href="{{salesrcd2_url}}"> <i class="bi bi-cart4 fs-1 float-end text-danger">
                     <button class="btn btn-outline-primary text-danger">
                         {{totalQ}}       
                     </button></i>
@@ -118,7 +119,8 @@
                                             }
                                         }
                                     }
-                                });                            </script>
+                                });                     
+                            </script>
 
                             <script>
                         
@@ -157,3 +159,4 @@
                 </main>
 {% endblock %}
  
+

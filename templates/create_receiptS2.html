@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-                <main>
+                                <main>
                      <a href="{% url 'salesrcd2' pk=request.user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
  <button class="btn btn-outline-primary text-danger">
                     {% if totalQ %}
@@ -23,7 +23,7 @@
                                 <div class="container-fluid px-4">
                                     <h1 class="mt-4">Success</h1>
                                     <ol class="breadcrumb mb-4">
-                                        <li class="breadcrumb-item active">Receipt Success</li>
+                                        <li class="breadcrumb-item active">Receipt Success </li>
                                     </ol>
                                     <hr class="bg-danger border-warning">
                                 <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
@@ -52,12 +52,13 @@
                                       
                                         </table>
 
-                                        <a href="{% url 'generate_sales_receipt' Receipt.pk  %}" target="_blank"> <button class="btn btn-outline-primary">print</button></a>
+                                        <a href="{% url 'generate_sales_receipt' Receipt.pk  %}" target="_blank"> <button class="btn btn-outline-primary">print pdf</button></a>
+                                        <a href="{% url 'generate_sales_receipt_txt' Receipt.pk  %}" target="_blank"> <button class="btn btn-outline-primary">print</button></a>
 
          
                                       </div>
                                       <div class="card-footer bg-primary text-white ">
-                                        <small class="muted-text "> {{Receipt.paymentT.time}}</small>
+                                        <small class="muted-text "> {{Receipt.payment.time}}</small>
                                       </div>
                                     </div>
 

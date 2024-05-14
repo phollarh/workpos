@@ -5,6 +5,8 @@ from django.utils import timezone
 from .fields import PositiveDecimalFromOneField
 from django.urls import reverse_lazy,reverse
 from accounts.models import Outlets, OutletStaff
+from django.core.validators import MinValueValidator
+from decimal import Decimal, ROUND_HALF_UP
 #from accounts.models import CustomUser
 
 # Create your models here.
@@ -29,7 +31,7 @@ class ProductList(models.Model):
 	selling_price=models.DecimalField(default=0, decimal_places=2, max_digits=8)
 	#images= models.ImageField(null=True,blank=True,upload_to=image_upload_to)
 	#selling_price=models.DecimalField(default=0, decimal_places=2, max_digits=8)
-	stock_inventory=models.DecimalField(default=0, decimal_places=1, max_digits=100, blank=True, null=True)
+	stock_inventory=models.DecimalField(default=0, decimal_places=1, max_digits=50, blank=True, null=True)
 	category=models.ForeignKey(Category, on_delete=models.SET_NULL , blank=True, null=True)
 	
 
@@ -49,6 +51,7 @@ class ProductList(models.Model):
 	#		total_quantity_sold += product_order.Quantity
 
 	#	return total_quantity_sold
+from decimal import Decimal
 class ProductListO(models.Model):
 	user=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
 	product=models.ForeignKey(ProductList,on_delete=models.CASCADE)
@@ -56,7 +59,7 @@ class ProductListO(models.Model):
 	#sold_In=models.CharField(max_length=60, blank=True,null=True)
 	#cost_price=models.DecimalField(default=0, decimal_places=2, max_digits=8)
 	
-	Quantity=PositiveDecimalFromOneField(max_digits=3, decimal_places=1)
+	Quantity=PositiveDecimalFromOneField(max_digits=8, decimal_places=2,validators=[MinValueValidator(0)])
 	#category=models.ForeignKey(Category, on_delete=models.SET_NULL , blank=True, null=True)
 	description=models.CharField(max_length=300, null=True, blank=True)
 	date=models.DateTimeField(default=timezone.now)
@@ -64,9 +67,10 @@ class ProductListO(models.Model):
 	#stock_inventory=models.ForeignKey('StockInventory', on_delete=models.SET_NULL, blank=True, null=True)
 
 	def save(self, *args, **kwargs):
+		
 		if self.Quantity > 0:
             # Subtract from stock_inventory only if Quantity is greater than 0
-			self.product.stock_inventory -= self.Quantity / 2
+			self.product.stock_inventory -= self.Quantity / Decimal('2')
 			self.product.save()
 		super(ProductListO, self).save(*args, **kwargs)
 
@@ -81,7 +85,11 @@ class ProductListO(models.Model):
 	def cost_price(self):
 		return self.product.cost_price * self.Quantity
 	def price(self):
-		return self.product.selling_price * self.Quantity
+
+		priceo = self.product.selling_price * self.Quantity
+		price = Decimal(priceo).quantize(Decimal('.01'), rounding=ROUND_HALF_UP)
+
+		return price
 
 
 
@@ -110,11 +118,12 @@ class SalesReceipt(models.Model):
 		for y in self.products.all():
 			total_cost_price += y.cost_price()
 			return total_cost_price
+			return round(total_cost_price, 2) 
 	def get_total_amount_onR(self):
 		total=0
 		for x in self.products.all():
 			total +=x.price()
-		return total
+		return round(total,2)
 	
 class Measurement(models.Model):
 	user=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
@@ -130,15 +139,16 @@ class Payment(models.Model):
      user=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
      payment_option=models.ForeignKey('PaymentOptions',on_delete=models.SET_NULL, blank=True, null=True)
      Payemntfor_receipt=models.ForeignKey(SalesReceipt, on_delete=models.SET_NULL, blank=True, null=True)
-     Amount_tenderd=models.DecimalField(default=0, decimal_places=3, max_digits=8, blank=True, null=True)
+     Amount_tenderd=models.DecimalField(default=0, decimal_places=2, max_digits=8, blank=True, null=True)
      
      time=models.DateTimeField(auto_now=True)
-     amount=models.DecimalField(default=0, decimal_places=3, max_digits=8, blank=True, null=True)
+     amount=models.DecimalField(default=0, decimal_places=2, max_digits=8, blank=True, null=True)
 
      def __str__(self):
           return f"{self.user} {self.amount} |{self.payment_option}"
      def balance(self):
-     	Total_bal=self.Amount_tenderd - self.amount
+     	Total_balo=self.Amount_tenderd - self.amount
+     	Total_bal = Decimal(Total_balo).quantize(Decimal('.01'), rounding=ROUND_HALF_UP)
      	return Total_bal
 class PaymentOptions(models.Model):
 	user=models.ForeignKey(get_user_model(), on_delete=models.CASCADE)

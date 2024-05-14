@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 
 # Create your models here.
-
+from phonenumber_field.modelfields import PhoneNumberField
 #from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
@@ -33,6 +33,7 @@ class CustomUserManager(BaseUserManager):
         print(extra_fields)
 
         return self.create_user(email, username, password, **extra_fields)
+
 import os
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -50,7 +51,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 	is_staff = models.BooleanField(default=False)
     #is_superuser = models.BooleanField(default=True)
 	email_verified=models.BooleanField(default=True)
-	image = models.ImageField(null=True,blank=True,upload_to='pics/profile_picture')
+	
 	outlet=models.ManyToManyField('Outlets', blank=True)
 
 	STATUS = (
@@ -59,6 +60,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('supervisor', 'supervisor'),
     )
 	status = models.CharField(max_length=100, choices=STATUS, default='attendant')
+	phone_number = PhoneNumberField(null=True, blank=True)
 
 	objects = CustomUserManager()
 
@@ -67,7 +69,36 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 	REQUIRED_FIELDS = ['username']
 
 	def __str__(self):
+
 		return self.username
+
+def profile_picture_upload_path(instance, filename):
+    # Generate a unique filename for the uploaded file
+    unique_filename = str(uuid4())
+
+    # Get the file's extension
+    _, extension = os.path.splitext(filename)
+
+    # Construct the upload path dynamically
+    upload_path = os.path.join('pics', 'p', 'profile_pictures', unique_filename + extension)
+
+    # Ensure that the directory structure exists
+    os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+
+    return upload_path
+class Profile(models.Model):
+    profile = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    date_modified = models.DateTimeField(auto_now=True)  
+    image = models.ImageField(null=True, blank=True, upload_to='profile_picture_upload_path')
+    
+
+    def __str__(self):
+        return str(self.profile.username)  # Return the username of the associated CustomUser
+
+def create_profile(sender, instance, created, **kwargs):
+    if created :
+        Profile.objects.create(profile=instance)
+post_save.connect(create_profile, sender=CustomUser)
 
 class Outlets(models.Model):
 	user=models.OneToOneField(CustomUser, on_delete=models.CASCADE)

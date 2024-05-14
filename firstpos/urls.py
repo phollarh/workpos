@@ -26,9 +26,11 @@ urlpatterns = [
     path('create_receiptup/<int:pk>/sucess', CreateReceiptSucess, name='create_receiptS'),
     path('create_receiptup/<int:pk>/past_receiptS', PastReceiptSucess, name='past_receiptS'),
     path('create_receiptup/<int:pk>/Delete', SalesRcListsDel, name='Delete_receiptS'),
+    path('add_product', views.add_product, name='add_product'),
     path('salesrc/', SalesRcListsView.as_view(), name='salesrc'),
     path('salesrc/<int:pk>/salesrcd', SalesRcDtailView.as_view(), name='salesrcd'),
     path('salesrc/<int:pk>/salesrcd2', SalesReceiptView, name='salesrcd2'),
+    path('change_quantity/', views.Change_Qreceipt, name='change_quantity'),
     path('salesrc/product_sales/<int:pk>/', views.SalesView_byProduct, name='product_sales'),
     path('salesrc/product_sales/', views.SalesView, name='product_sale'),
     path('AddPayment/<int:pk>', AddPayment, name='Add_payment'),
@@ -36,6 +38,7 @@ urlpatterns = [
     path('remove_producto/<int:pk>', RemoveProducto, name='remove_producto'),
     path('receipt_pdf/<int:pk>', SalesReceiptPdf, name='receipt_pdf'),
     path('generate_sales_receipt/<int:pk>/', generate_sales_receipt_pdf, name='generate_sales_receipt'),
+    path('generate_sales_receipt_txt/<int:pk>/', views.generate_sales_receipt_text, name='generate_sales_receipt_txt'),
     path('sales_chart/', views.sales_chart, name='sales_chart'),
 
     

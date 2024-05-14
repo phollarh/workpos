@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+                <main>
+                    <div class="container">
+                        {% if messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {% for message in messages %}
+                                            {{message}}
+                                            {% endfor %}
+                                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="container-fluid px-4">
+                                   
+                                    <br><br>
+                                    <div class="shadow p-2 mb-3 bg-body-tertiary rounded">
+                                            <i class="bi bi-gear-fill text-primary"> &nbsp;&nbsp;Settings</i>
+                                        <ol class="breadcrumb mb-4">
+                                            <small class="breadcrumb-item active text-primary"> System settings1</small>
+                                        </ol>
+
+                                        <hr class="bg-danger border-warning">
+                                    
+                                        <div class="card">
+                                            <div class="card-header border-light mb-3">
+
+                                            </div>
+                                            <div class="card-body">
+                                                <h5 class="card-title"></h5>
+                                                <p class="card-text">
+                                                 <i class="bi bi-shop text-primary">&nbsp;&nbsp;<strong>Outlets and POS Settings</strong></i>
+                                                </p>
+                                                <hr class="bg-danger border-warning">
+                                                <div class="d-grid gap-2">
+                                                                                             <a href="{% url 'settings_paged' %}"><button class="btn btn-outline-light text-primary"><i class="bi bi-sliders2">&nbsp;&nbsp;Outlets</i></button></a>
+                                                                                            <button class="btn btn-outline-light text-primary"><i class="bi bi-sliders2">POS Settings</i></button>
+                                                </div>
+                                          </div>
+                                        </div>
+                                        
+
+                                    </div>
+
+                                    
+                                    
+                                </div>
+                                    
+                            </div>
+                        
+                            <div class="col-7">
+                                
+                                <br><br>
+                                    
+                                 <div class="shadow p-2 mb-3 bg-body-tertiary rounded">
+                                        <div class="card bg-primary text-white mb-4">
+                                            	<div class="card-body">
+						<div class="col-md-4">
+                                                    {% if outlet.outlet_logo %}
+                                                       <a href=" {% url 'change_outlet_logo' outlet..pk %}"> <img src="{{ outlet.outlet_logo.url }}" class="rounded-circle float-end" alt="User Image" style="width: 80px; height: 80px;"></a>
+                                                    {% else %}
+                                                       <a href="{% url 'change_outlet_logo' outlet.pk %}"> <img src="{% static 'images/default.png' %}" class="img-fluid rounded-start float-end" style="width: 80px; height: 80px;"></a>
+                                                    {% endif %}
+                                                </div>
+						</div>
+					</div>
+				</div>
+    
+                                    <div class="shadow p-2 mb-3 bg-body-tertiary rounded"> 
+                                        <div class="card bg-primary text-white mb-4">
+                                            <div class="card-body"> 
+                                                
+                                                <form method="POST">
+                                                    {% csrf_token %}
+                                                   <div class="text-white mb-3">
+    <input type="text" name="name" class="form-control" placeholder="{{ form.name.value }}">
+</div>
+<div class="text-white mb-3">
+    <input type="email" name="email_address" class="form-control" placeholder="{{ form.email_address.value }}">
+</div>
+<div class="text-white mb-3">
+    <input type="text" name="city" class="form-control" placeholder="{{ form.city.value }}">
+</div>
+<div class="text-white mb-3">
+    <input type="text" name="address" class="form-control" placeholder="{{ form.address.value }}">
+</div>
+<div class="text-white mb-3">
+    <input class="form-control intl-tel-input" type="tel" id="phone" name="phone_number" placeholder="{{ form.phone_number.value }}">
+</div>
+<div class="text-white mb-3">
+    <input type="text" name="Facebook" class="form-control" placeholder="{{ form.Facebook.value }}">
+</div>
+<div class="text-white mb-3">
+    <input type="text" name="Instagram" class="form-control" placeholder="{{ form.Instagram.value }}">
+</div>
+<div class="text-white mb-3">
+    <input type="file" name="outlet_logo" class="form-control" accept="image/*" id="id_outlet_logo" placeholder="{{ form.outlet_logo.value }}">
+</div>
+<div class="text-white mb-3">
+    <input type="file" name="media" class="form-control" accept="image/*" id="id_media" placeholder="{{ form.media.value }}">
+</div>
+
+                                                   <center> <button class=" text-white btn btn-outline-info"> Update Outlet </button></center>
+                                                    
+                                                </form>
+                                                
+                                                                    
+                                            </div>
+                
+                                        </div>
+                                    </div>
+                                
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </main>
+{% endblock %}

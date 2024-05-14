@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import dj_database_url
+#import dj_database_url
 from pathlib import Path
 import os
 
@@ -21,14 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
-#SECRET_KEY = 'django-insecure-oy&$uxkrsdom_#3((ve&7mgmx^l@*7%58yto^$ol$0)+@(oxj+'
+#SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = 'django-insecure-oy&$uxkrsdom_#3((ve&7mgmx^l@*7%58yto^$ol$0)+@(oxj+'
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-DEBUG = os.environ.get("DEBUG", "False").lower == "true"
+DEBUG = False
+#DEBUG = os.environ.get("DEBUG", "False").lower == "true"
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
-#ALLOWED_HOSTS= []
+#ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS= ['www.firstbukkofpos.cloud', 'firstbukkofpos.cloud']
 
 # Application definition
 
@@ -51,6 +51,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'firstpos.middleware.HttpsRedirectMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,6 +60,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 ROOT_URLCONF = 'pos.urls'
 
@@ -88,13 +92,17 @@ WSGI_APPLICATION = 'pos.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-        'default': {'ENGINE': 'django.db.backends.sqlite3',
-        'NAME' : 'BASE_DIR /'"db.sqlite3",
+        'default': {
+		'ENGINE': 'django.db.backends.mysql',
+        'NAME' : 'phollarh1_db',
+	'USER' : 'phollarh1',
+	'PASSWORD' : 'Oroberts111#',
+	'HOST' : 'localhost',
+	'PORT' : '3306',
         
         }
 }
-database_url = os.environ.get("DATABASE_URL")
-DATABASES["default"] = dj_database_url.parse(database_url)
+
 
 
 

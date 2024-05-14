@@ -76,14 +76,14 @@ class ProductFormO(forms.ModelForm):
 
 
         widgets = {
-
-
+        'Quantity': forms.NumberInput(attrs={'class': 'form-control', 'style': 'width: 150px'}),
+        #'Quantity': PositiveDecimalFromOneField(attrs={'class':'form-control'}),
         #'product_name':forms.TextInput(attrs={'class':'form-control'}),
         #'sold_In' : forms.Select( attrs={'class':'form-control'}),
     #    'cost_price':forms.TextInput(attrs={'class':'form-control'}),
         #'selling_price':forms.TextInput(attrs={'class':'form-control'}),
         #'category': forms.Select(attrs={'class':'form-control'}),
-        'description' :forms.TextInput(attrs={'class':'form-control'}),
+        'description' :forms.Textarea(attrs={'class':'form-control', 'rows': 3}),
         }
     #
         
@@ -217,7 +217,7 @@ class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
 
-        exclude = ('user', 'date','products','amount','Payemntfor_receipt',)
+        exclude = ('user', 'date','products','amount','Payemntfor_receipt')
 
         widgets = {
 

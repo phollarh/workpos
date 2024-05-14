@@ -25,17 +25,17 @@
                                             <div class="card bg-primary text-white mb-4">
                                                 <div class="card-body"> 
                                                 
-                                                <form method="POST">
+							form method="POST">
                                                 {% csrf_token %}
-                                                    <form method="post">
+                                                    <form method="post" enctype="multipart/form-data">
                                                       {% csrf_token %}
                                                         {{form.as_p}}
+                                                        {{form.media}}
                                                       <hr>
                                                     <center> 
                                                     <button class="btn btn-secondary"> Add Staff </button>
                                                     </center>
-                                                </form>
-                                                
+                                                </form>                                                
                                                                     
                                                 </div>
                                                 

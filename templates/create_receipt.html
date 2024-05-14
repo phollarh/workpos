@@ -4,18 +4,18 @@
 
                 <main>
                         {% if totalQ %}
-                            <a href="{% url 'salesrcd2' pk=request.user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
-                         <button class="btn btn-outline-primary text-danger">
-                                            
-                                                {{totalQ}}
-                                                </button></i></a>&nbsp;&nbsp;
-                        {% else %}
-                                            <a href="{% url 'create_receipt' user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
-                         <button class="btn btn-outline-primary text-danger">
-                                                0
-                                                                
-                                    </button></i></a>&nbsp;&nbsp;
-                       {% endif %}
+            
+                <a href="{{salesrcd2_url}}"> <i class="bi bi-cart4 fs-1 float-end text-danger">
+                    <button class="btn btn-outline-primary text-danger">
+                        {{totalQ}}       
+                    </button></i>
+                </a>&nbsp;&nbsp;
+            {% else %}
+                <a href="{% url 'create_receipt' user.id %} "> <i class="bi bi-cart4 fs-1 float-end text-danger">
+                    <button class="btn btn-outline-primary text-danger">
+                        0
+                    </button></i></a>&nbsp;&nbsp;
+            {% endif %}
                         <br><br>
                                 
                     <div class="container">
@@ -29,6 +29,9 @@
                         <br><br><br>
                         <div class="card float-end border-info" style="width: 12rem; ">
                             <center>
+				<div class="card card-header">
+				<h5 class="text-primary text-center"> Attending Staff </>
+				</div><br>
                               {% if  staff_login.outlet_staff.image %}
                             <img src="{{staff_login.outlet_staff.image.url}}" class="rounded-circle" style="width: 90px; height:90px;"> </img>
                             {% else %}
@@ -48,13 +51,13 @@
                             <div class="col-10">
                                 <div class="container-fluid px-4">
                                     
-                                    <h1 class="mt-4">Receipts</h1><br>
+                                    <h1 class="mt-4 text-center">Product Lists</h1><br>
                                     <div class="grid gap-3">
                                          {% for product in productList %}
                                         <div class="p-2 g-col-6">
                                             <div class="shadow-lg p-2 mb-6 bg-body-tertiary rounded">
                                            
-                                            <a href="{% url 'create_receiptV' product.pk %}"> <button class=" btn btn-outline-secondary" style="width: 300px; height: 70px;">{{product.product_name}} | &nbsp;{{product.selling_price}} per {{product.sold_In}} </button></a>
+                                            <button id="pro_{{product.id}}" data-index="{{product.id}}" class=" add_product btn btn-outline-secondary" style="width: 300px; height: 70px;">{{product.product_name}} | &nbsp;{{product.selling_price}} per {{product.sold_In}}</button>
                                             </div>
                                         </div>
                                         {% endfor %}
@@ -78,4 +81,28 @@
                     </div>
                     
                 </main>
+
+                <script type="text/javascript">
+                    $(document).ready(function(){
+                        $('.add_product').click(function(){
+                            let productId = $(this).data('index')
+                            $.ajax({
+                                type: 'POST',
+                                url : '{% url 'add_product' %}',
+                                data : {
+                                    product_id : productId,
+                                    csrfmiddlewaretoken: '{{csrf_token}}',
+                                    action: 'post'
+                                },
+                                success: function(json){
+                                
+                                    window.location.href = '/salesrc/' + json.receipt_id + '/salesrcd2';
+                                },
+                                error:function(xhr, errmsg, err){
+
+                                }
+                            });
+                        })
+                    })
+                </script>
 {% endblock %}
