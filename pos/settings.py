@@ -24,11 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #SECRET_KEY = os.environ.get("SECRET_KEY")
 SECRET_KEY = 'django-insecure-oy&$uxkrsdom_#3((ve&7mgmx^l@*7%58yto^$ol$0)+@(oxj+'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 #DEBUG = os.environ.get("DEBUG", "False").lower == "true"
 
 #ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
-ALLOWED_HOSTS= ['www.firstbukkofpos.cloud', 'firstbukkofpos.cloud']
+ALLOWED_HOSTS= []
 
 # Application definition
 
@@ -92,15 +92,13 @@ WSGI_APPLICATION = 'pos.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-        'default': {
-		'ENGINE': 'django.db.backends.mysql',
-        'NAME' : 'phollarh1_db',
-	'USER' : 'phollarh1',
-	'PASSWORD' : 'Oroberts111#',
-	'HOST' : 'localhost',
-	'PORT' : '3306',
-        
-        }
+    'default':  {'ENGINE': 'django.db.backends.postgresql',
+        'NAME' : 'firstpos',
+        'USER' : 'postgres',
+        'PASSWORD' :'644215',
+        'HOST' : 'localhost',
+        'PORT' : '5433'
+    }
 }
 
 

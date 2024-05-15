@@ -1,45 +1,93 @@
-<div class="container" style="width: 80%; padding: 20px;">
-        <center>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt text</title>
+<style>
+    .table {
+        font-size: 12px; /* or inherit */
+        font-family: Courier;
+    }
+    body{
+        font-family: Courier;
+    }
+    .receipt-header{
+        font-size: 18px;
+    }
+    .receipt-item{
+        font-size: 18px;
+    }
+</style>
+</style>
+
+</head>
+<body>
+<div class="container changeFont " style="margin: 0; padding: 0; width: 100%; ">
+        
         <div class="text-center">
             <div class="receipt-header" style="font-weight: bold;">
-                <p><h4>{{ outlet.name|upper }}</h4></p>
-                <p><h5>{{ outlet.address }}</h5></p>
-                <p><h5>{{ outlet.phone_number }}</h5></p>
+                <center>
+                <h5 style="margin: 0; padding: 0">{{ outlet.name|upper }} </h5>
+                <h6 style="margin: 0; padding: 0">{{ outlet.address }}</h6>
+                <h6 style="margin: 0; padding: 0">{{ outlet.phone_number }}</h6>
+                </center>
             </div>
-            <hr style="border-top: 2px solid ;">
+            <hr style="border-top: 1px solid ;">
 
             <div class="receipt-header">
-                <h6>Sale Receipt: #0{{ receipt.id }}</h6>
+                <h6 style="margin: 0; padding: 0;">Sale Receipt: #0{{ receipt.id }}</h6>
             </div>
             <div class="receipt-item">
-                <h6>Date: {{ receipt.date }}</h6>
+                <h6 style="padding: 0; margin: 0;">Date: {{ receipt.date }}</h6>
             </div>
             <div class="receipt-item">
-                <h6>Issued by: {{ attending_staff.outlet_staff.name }}</h6>
+                <h6 style="padding: 0; margin: 0;">Issued by: {{ attending_staff.outlet_staff.name }}</h6>
             </div>
-            <hr style="border-top: 2px solid;">
-            <div class="receipt-item" style="font-weight: bold;">
-                <h5 >Items:</h5>
-                <ul>
-                    {% for product in receipt.products.all %}
-                    <li><h5>{{ product.product.product_name }}: {{ product.Quantity }} X {{ product.product.selling_price }} = {{product.price}}<h5/></li>
+            <hr style="border-top: 1px solid;">
+            <div class="receipt-item" style="font-weight: bold; margin: 0; padding: 0">
+                <table class="table">
+                  <thead class="text-center">
+                    <tr>
+                      <th scope="col" style="width: 5%;">#</th>
+                      <th scope="col" style="width: 55%;">item(s)</th>
+                      <th scope="col" style="width: 10%;">QTY</th>
+                      <th scope="col" style="width: 30%;">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-center">
+                    <tr>
+                        {% for product in receipt.products.all %}
+                      <th scope="row" style="vertical-align: middle; padding-top: 0px;">{{forloop.counter }}</th>
+                      
+                      <td style="vertical-align: middle; padding-top: 0px;">
+                          
+                          {{product.product}}
+                          
+                      </td>
+                      <td style="vertical-align: middle; padding-top: 0px;">{{product.Quantity}}</td>
+                      <td style="vertical-align: middle; padding-top: 0px;">{{product.price}}</td>
+                    </tr>
                     {% endfor %}
-                </ul>
-                <hr style="border-top: 2px solid;">
+                  </tbody>
+                </table>
+                <hr style="border-top: 1px solid;">
             </div>
             <div class="receipt-item">
-                <h5>Total Amount: {{ receipt.get_total_amount_onR }}</h5>
+                <h5 style="padding: 0; margin: 0;">Total Amount: {{ receipt.get_total_amount_onR }}</h5>
             </div>
             <div class="receipt-item">
-                <h5>Amount Tendered: {{ receipt.paymentT.Amount_tenderd }}&nbsp;{{ receipt.paymentT.payment_option }}</h5>
+                <h5 style="padding: 0; margin: 0;">Amount Tendered: {{ receipt.paymentT.Amount_tenderd }}&nbsp;{{ receipt.paymentT.payment_option }}</h5>
             </div>
             <div class="receipt-item">
-                <h5>Change Due: {{ receipt.paymentT.balance }}</h5>
+                <h5 style="padding: 0; margin: 0;">Change Due: {{ receipt.paymentT.balance }}</h5>
             </div>
-            <hr style="border-top: 2px solid;">
+            <hr style="border-top: 1px solid;">
             <div class="receipt-item">
-                <h6>Thank you for your patronage!</h6>
-            </div><br><br><hr>
+                <h6 style="padding: 0; margin: 0;">Thank you for your patronage!</h6>
+            </div><hr>
         </div>
-</center>
+
 </div>
+</body>
+</html>

@@ -134,12 +134,12 @@ class OutletStaff(models.Model):
 	user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 	outlet=models.ForeignKey(Outlets, on_delete=models.CASCADE)
 	image = models.ImageField(null=True,blank=True,upload_to='pics/staffs/profile_picture')
-	name= models.CharField(max_length=100)
-	phone_number=models.CharField(max_length=30)
-	address=models.CharField(max_length=100)
-	email = models.EmailField(blank=True, null=True, max_length=50)
+	name= models.CharField(max_length=100, null=False, blank=False)
+	phone_number=models.CharField(max_length=30, null=False, blank=False)
+	address=models.CharField(max_length=100, null=False, blank=False)
+	email = models.CharField(blank=True, null=True, max_length=100)
 	status = models.CharField(max_length=100, choices=STATUS, default='staff')
-	Employee_id=models.CharField(max_length=4)
+	Employee_id=models.CharField(max_length=4, null=False, blank=False)
 	description = models.TextField("Description", max_length=600, default='', blank=True)
 
 

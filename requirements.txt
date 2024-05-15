@@ -49,4 +49,8 @@ xhtml2pdf==0.2.14
 zopfli==0.2.3
 dj-database-url==2.1.0
 packaging==23.2
+django-phonenumber-field
+phonenumbers
+django-countries
+
 

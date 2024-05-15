@@ -323,7 +323,7 @@ def OutletStaffUpdateView(request, pk):
 	outlet = get_object_or_404(OutletStaff, pk=pk)
 	if outlet.user.id == request.user.id:
 
-		form=OutletStaffForm(request.POST or None,request.FILES or None, instance=outlet, user=request.user)
+		form=OutletStaffForm(instance=outlet, user=request.user)
 		if request.method=="POST":
 			form=OutletStaffForm(request.POST or None, request.FILES or None,instance=outlet, user=request.user)
 			if form.is_valid():
@@ -346,7 +346,7 @@ def AddOutletStaff(request):
 	outlet=OutletStaff.objects.filter(user=request.user)
 
 
-	form=OutletStaffForm(request.POST, request.FILES or None, user=request.user)
+	form=OutletStaffForm(user=request.user)
 
 	
 	if request.method=='POST':

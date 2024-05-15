@@ -166,7 +166,7 @@ class change_outlet_logoForm(forms.ModelForm):
 
 class OutletForm(forms.ModelForm):
     name=forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}))
-    email_address=forms.EmailField(max_length=60, widget=forms.EmailInput(attrs={'class':'form-control'}))
+    email_address=forms.EmailField(max_length=60,required=True, widget=forms.EmailInput(attrs={'class':'form-control'}))
     city=forms.CharField(max_length=50, required=True,widget=forms.TextInput(attrs={'class':'form-control'}))
     address=forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
     phone_number=forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -174,7 +174,7 @@ class OutletForm(forms.ModelForm):
     Facebook=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     Instagram=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
     outlet_logo=forms.ImageField(label='Image', required=False, widget=forms.ClearableFileInput(attrs={'class': 'form-control'}))
-    outlet_description=forms.CharField(max_length=20,  required=False,widget=forms.Textarea(attrs={'class':'form-control', 'rows':5, 'cols': 50}))
+    outlet_description=forms.CharField(max_length=1000,  required=False,widget=forms.Textarea(attrs={'class':'form-control', 'rows':5, 'cols': 50}))
     
     
    
@@ -190,16 +190,14 @@ class OutletStaffForm(forms.ModelForm):
     #outlet=forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class':'form-control'}))
     name=forms.CharField(max_length=60, widget=forms.TextInput(attrs={'class':'form-control'}))
     address=forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    #address=forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
     phone_number=forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
     #status=forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
-    email=forms.EmailField(label='Email',required=True, widget=forms.EmailInput(attrs={'class':'form-control'}))
+    email=forms.EmailField(max_length=60, widget=forms.EmailInput(attrs={'class':'form-control'}))
+    #email=forms.EmailField(label='Email',required=True, widget=forms.EmailInput(attrs={'class':'form-control'}))
     Employee_id=forms.CharField(max_length=4,  required=True,widget=forms.PasswordInput(attrs={'class':'form-control'}))
     description=forms.CharField(max_length=20,  required=False,widget=forms.Textarea(attrs={'class':'form-control', 'rows' : 5, 'cols' : 50}))
 
-    
-    
-    
-    
     
     class Meta:
         model = OutletStaff

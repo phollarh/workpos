@@ -37,7 +37,7 @@ class ProductList(models.Model):
 
 	def __str__(self):
 
-		return f"{self.product_name} | {self.cost_price}"
+		return f"{self.product_name} | {self.selling_price}"
 	def get_absolute_url(self) :
           return reverse('detail_updateview', args=(str(self.id)))
           #return reverse('index')
