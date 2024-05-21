@@ -51,10 +51,21 @@
                                             </tbody>
                                       
                                         </table>
-
+                                        <form method="POST" action="">
+                                            {% csrf_token %}
+                                            <div class="col-mb-3">
+                                            <input class="form-control" type="text" id="remarks" placeholder="Add remarks here .." name="remarks">
+                                            </div><br>
+                                            <div>
+                                            
+                                                    <button type="submit" class="btn btn-outline-primary btn-block">Add Remarks and Print</button> 
+                                        
+                                            </div>
+                                        </form><br>
+                                        <div>
                                         <a href="{% url 'generate_sales_receipt' Receipt.pk  %}" target="_blank"> <button class="btn btn-outline-primary">print pdf</button></a>
                                         <a href="{% url 'generate_sales_receipt_txt' Receipt.pk  %}" target="_blank"> <button class="btn btn-outline-primary">print</button></a>
-
+                                    </div><br>
          
                                       </div>
                                       <div class="card-footer bg-primary text-white ">

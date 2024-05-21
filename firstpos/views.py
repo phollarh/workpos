@@ -25,6 +25,7 @@ from django.template.loader import get_template
 from django.template import Context
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
+from decimal import Decimal, InvalidOperation
 
 @login_required
 @email_verified_required
@@ -486,23 +487,29 @@ def CreateReceiptVUpdate(request, pk):
 		return render(request, 'create_receiptUpdateV.html', context )
 	else:
 		return render(request, '401.html')
-
-@login_required		
+@login_required
 @email_verified_required
 def Change_Qreceipt(request):
 	if request.method == 'POST' and request.POST.get('action') == 'post':
-		receipt_id = int(request.POST.get('receipt_id'))
-		product_id = request.POST.get('product_id')
-		receipt_qty = int(request.POST.get('receipt_Qty'))
-		sale_receipt = SalesReceipt.objects.get(id=receipt_id, issued= False)
-		for product in sale_receipt.products.all():
-			if str(product.id) == str(product_id):
+		try:
+			receipt_id = int(request.POST.get('receipt_id'))
+			product_id = request.POST.get('product_id')
+			receipt_qty = Decimal(request.POST.get('receipt_Qty'))
+			
+          
 
-				product.Quantity = receipt_qty
-				product.save()
 
-		response_data = {'qty': receipt_qty, }
-		return JsonResponse(response_data)
+			sale_receipt = SalesReceipt.objects.get(id=receipt_id, issued=False)
+			
+			for product in sale_receipt.products.all():
+				if str(product.id) == str(product_id):
+					product.Quantity = receipt_qty
+					product.save()
+
+			response_data = {'qty': float(receipt_qty)}
+			return JsonResponse(response_data)
+		except (ValueError, InvalidOperation, SalesReceipt.DoesNotExist):
+			return JsonResponse({'error': 'Invalid data or receipt not found'})
 	else:
 		return JsonResponse({'error': 'Invalid request method or missing action'})
 # def Change_Qreceipt(request):
@@ -714,6 +721,14 @@ def CreateReceiptSucess(request, pk):
 	Receipt=get_object_or_404(SalesReceipt ,pk=pk, issued=True)
 	if Receipt.user.id == request.user.id :
 
+		if request.method == 'POST':
+			remarks = request.POST.get('remarks')
+
+			Receipt.Remarks=remarks
+
+			Receipt.save()
+			return redirect('generate_sales_receipt_txt', pk = Receipt.pk)
+
 
 		context={
 			"Receipt":Receipt,
@@ -728,11 +743,17 @@ def CreateReceiptSucess(request, pk):
 @email_verified_required
 def PastReceiptSucess(request, pk):
 	Receipt=get_object_or_404(SalesReceipt ,pk=pk, issued=True)
+	outlet=get_object_or_404(Outlets, user=request.user)
+	attending_staff=get_object_or_404(OutletStaffLogin, user=request.user)
+	receipt_pk=Receipt.id
 	if Receipt.user.id == request.user.id :
 
 
 		context={
 			"Receipt":Receipt,
+			"outlet" :outlet,
+			"attending_staff":attending_staff,
+			"receipt_pk":receipt_pk,
 
 		}
         
@@ -741,20 +762,31 @@ def PastReceiptSucess(request, pk):
 
 		return render(request, '404.html')
 
-
 		
 @login_required
 @email_verified_required
-def SalesRcListsDel(request, pk):
-    Receipt = get_object_or_404(SalesReceipt, pk=pk, issued=True)
-    if Receipt.user.id==request.user.id:
-    	if request.method == 'POST':
-    		Receipt.delete()
-    		messages.success(request, 'Receipt deleted successfully.')
-    		return redirect('salesrc')
-    	return render(request, 'SalesRcListsDel.html', {'Receipt': Receipt})
-    else:
-    	return render(request, '404.html')
+def SalesRcListsDel(request):
+	if request.method == 'POST' and request.POST.get('action') == 'post':
+		receipt_id = int(request.POST.get('receipt_id'))
+		admin_pw = request.POST.get('admin_pw')
+		try:
+			Receipt = get_object_or_404(SalesReceipt, id=receipt_id, issued=True)
+			if request.user.check_password(admin_pw):
+				Receipt.delete()
+				messages.success(request, 'Receipt deleted successfully.')
+				return JsonResponse({'message': 'Receipt deleted successfully.'})
+			else:
+				return JsonResponse({'error': 'Incorrect password.'}, status=403)
+		except SalesReceipt.DoesNotExist:
+			return JsonResponse({'error': 'Receipt not found.'}, status=404)
+
+    		
+	
+		
+		#return redirect('salesrc')
+    	
+	else:
+		return render(request, '404.html')
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(email_verified_required, name='dispatch')
@@ -897,6 +929,25 @@ def SalesView(request):
 
 
 
+	Receipt_day = SalesReceipt.objects.filter(
+            user=request.user,
+            issued=True,
+            date__date__gte=start_date,
+            date__date__lte=end_date,
+            # products__date__date=current_date,
+        ).order_by('-date')
+	#day_of_week=current_date.strftime('%A')
+	Profit=0
+	total_priceIna_forday = 0
+	total_priceIna_fordayCost=0
+	for receipt in Receipt_day:
+
+		total_priceIna_forday += receipt.get_total_amount_onR()
+	 
+		total_priceIna_fordayCost += receipt.get_total_amount_onRCost()
+
+		Profit= total_priceIna_forday - total_priceIna_fordayCost
+
 	pro = ProductList.objects.filter(
 		productlisto__user=request.user,
 		
@@ -940,6 +991,10 @@ def SalesView(request):
 
 	context={
 
+
+		"total_priceIna_forday":total_priceIna_forday,
+		"total_priceIna_fordayCost":total_priceIna_fordayCost,
+		"Profit":Profit,
 		'pro':pro,
 		'item': item,
 		'start_date':start_date,
@@ -957,6 +1012,7 @@ def SalesView(request):
 		}
 
 	return render(request, 'product_sales.html', context)
+
 @login_required
 @email_verified_required
 def SalesView_byProduct(request, pk):

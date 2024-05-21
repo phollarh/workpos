@@ -106,7 +106,7 @@ class Outlets(models.Model):
 	email_address=models.EmailField(max_length=50, null=True, blank=True)
 	city=models.CharField(max_length=100,null=True,blank=True)
 	address=models.CharField(max_length=100, null=True, blank=True)
-	phone_number=models.CharField(max_length=20, null=True, blank=True)
+	phone_number = PhoneNumberField(null=True, blank=True)
 	#staff=models.CharField(max_length=50, null=False, blank=False)
 	Facebook= models.CharField(null=True, blank=True, max_length=100)
 	Instagram=models.CharField(null=True, blank=True, max_length=100)
@@ -122,7 +122,6 @@ class Outlets(models.Model):
 
 
 
-# Create your models here.
 class OutletStaff(models.Model):
 
 	STATUS = (
@@ -135,7 +134,7 @@ class OutletStaff(models.Model):
 	outlet=models.ForeignKey(Outlets, on_delete=models.CASCADE)
 	image = models.ImageField(null=True,blank=True,upload_to='pics/staffs/profile_picture')
 	name= models.CharField(max_length=100, null=False, blank=False)
-	phone_number=models.CharField(max_length=30, null=False, blank=False)
+	phone_number = PhoneNumberField(null=True, blank=True)
 	address=models.CharField(max_length=100, null=False, blank=False)
 	email = models.CharField(blank=True, null=True, max_length=100)
 	status = models.CharField(max_length=100, choices=STATUS, default='staff')
@@ -152,7 +151,7 @@ class OutletStaff(models.Model):
 
 class OutletStaffLogin(models.Model):
 	user=models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-	outlet_staff=models.OneToOneField(OutletStaff, on_delete=models.CASCADE, blank=True, null=True)
+	outlet_staff=models.OneToOneField(OutletStaff, on_delete=models.SET_NULL, blank=True, null=True)
 	date=models.DateTimeField(default=timezone.now)
 	
 	

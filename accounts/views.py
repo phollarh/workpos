@@ -253,6 +253,7 @@ def Update_ViewProfile(request, pk):
 #class Settings_Page(ListView):
 #	template_name= 'settings_page.html'
 #	model = Outlets
+
 @login_required
 @email_verified_required
 def Settings_Page(request):
@@ -267,22 +268,22 @@ def Settings_Page(request):
 		staff_login=None
 
 	outlet_staff = OutletStaff.objects.filter(user=request.user)
-	if staff_login.user.id ==request.user.id:
+	#if staff_login.user.id ==request.user.id:
 
-		if staff_login:
-			context={
+	if staff_login:
+		context={
 				'active_staff':active_staff,
 				'staff_login':staff_login,
 				'outlet_staff':outlet_staff,
 				}
 
-			return render(request, 'accounts/settings_page.html', context)
+		return render(request, 'accounts/settings_page.html', context)
 
-		else:
-
-			return render(request, 'accounts/settings_page.html')
 	else:
-		return render(request, '404.html')
+
+		return render(request, 'accounts/settings_page.html')
+#	else:
+#		return render(request, '404.html')
 
 
 @login_required

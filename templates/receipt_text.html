@@ -3,91 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Receipt text</title>
-<style>
-    .table {
-        font-size: 12px; /* or inherit */
-        font-family: Courier;
-    }
-    body{
-        font-family: Courier;
-    }
-    .receipt-header{
-        font-size: 18px;
-    }
-    .receipt-item{
-        font-size: 18px;
-    }
-</style>
-</style>
-
+    <title>Receipt Text</title>
+    <style>
+        body, .table {
+            font-family: Consolas;
+        }
+        .table {
+            width: 100%;
+            font-size: 13px;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            padding: 3px;
+            text-align: left;
+        }
+        .table th {
+            font-weight: bold;
+        }
+        .receipt-header{
+            font-size: 17px;
+            line-height: 2.2;
+        }
+	.receipt-sub-header{
+            font-size: 18px;
+            line-height: 2.1;
+        }
+        .receipt-item {
+            font-size: 18px;
+		 line-height: 2.1;
+             
+           
+        
+        }
+    </style>
 </head>
 <body>
-<div class="container changeFont " style="margin: 0; padding: 0; width: 100%; ">
-        
-        <div class="text-center">
-            <div class="receipt-header" style="font-weight: bold;">
-                <center>
-                <h5 style="margin: 0; padding: 0">{{ outlet.name|upper }} </h5>
-                <h6 style="margin: 0; padding: 0">{{ outlet.address }}</h6>
-                <h6 style="margin: 0; padding: 0">{{ outlet.phone_number }}</h6>
-                </center>
-            </div>
-            <hr style="border-top: 1px solid ;">
-
-            <div class="receipt-header">
-                <h6 style="margin: 0; padding: 0;">Sale Receipt: #0{{ receipt.id }}</h6>
-            </div>
-            <div class="receipt-item">
-                <h6 style="padding: 0; margin: 0;">Date: {{ receipt.date }}</h6>
-            </div>
-            <div class="receipt-item">
-                <h6 style="padding: 0; margin: 0;">Issued by: {{ attending_staff.outlet_staff.name }}</h6>
-            </div>
-            <hr style="border-top: 1px solid;">
-            <div class="receipt-item" style="font-weight: bold; margin: 0; padding: 0">
-                <table class="table">
-                  <thead class="text-center">
-                    <tr>
-                      <th scope="col" style="width: 5%;">#</th>
-                      <th scope="col" style="width: 55%;">item(s)</th>
-                      <th scope="col" style="width: 10%;">QTY</th>
-                      <th scope="col" style="width: 30%;">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody class="text-center">
-                    <tr>
-                        {% for product in receipt.products.all %}
-                      <th scope="row" style="vertical-align: middle; padding-top: 0px;">{{forloop.counter }}</th>
-                      
-                      <td style="vertical-align: middle; padding-top: 0px;">
-                          
-                          {{product.product}}
-                          
-                      </td>
-                      <td style="vertical-align: middle; padding-top: 0px;">{{product.Quantity}}</td>
-                      <td style="vertical-align: middle; padding-top: 0px;">{{product.price}}</td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-                <hr style="border-top: 1px solid;">
-            </div>
-            <div class="receipt-item">
-                <h5 style="padding: 0; margin: 0;">Total Amount: {{ receipt.get_total_amount_onR }}</h5>
-            </div>
-            <div class="receipt-item">
-                <h5 style="padding: 0; margin: 0;">Amount Tendered: {{ receipt.paymentT.Amount_tenderd }}&nbsp;{{ receipt.paymentT.payment_option }}</h5>
-            </div>
-            <div class="receipt-item">
-                <h5 style="padding: 0; margin: 0;">Change Due: {{ receipt.paymentT.balance }}</h5>
-            </div>
-            <hr style="border-top: 1px solid;">
-            <div class="receipt-item">
-                <h6 style="padding: 0; margin: 0;">Thank you for your patronage!</h6>
-            </div><hr>
+<div class="container changeFont" style="margin: 0; padding: 0; width: 100%;">
+    <div class="text-center">
+        <div class="receipt-header" style="font-weight: bold;">
+            <center>
+                <h6 style="margin: 0; padding: 1px;">{{ outlet.name|upper }}</h6>
+                <h6 style="margin: 0; padding: 1px;">{{ outlet.address }}</h6>
+                <h6 style="margin: 0; padding: 1px;">{{ outlet.phone_number }} &nbsp;{{outlet.user.phone_number}}</h6>
+            </center>
         </div>
-
+        <hr style="border-top: 1px solid;">
+        <div class="receipt-sub-header">
+            <h6 style="margin: 0; padding: 2px; word-spacing: -2px;">Sale Receipt: #0{{ receipt.id }}</h6>
+        </div>
+        <div class="receipt-sub-header">
+            <h6 style="padding: 2px; margin: 0; word-spacing: -2px;">Date: {{ receipt.date }}</h6>
+        </div>
+        <div class="receipt-sub-header">
+            <h6 style="padding: 2px; margin: 0; word-spacing: -2px;">Issued by: {{ attending_staff.outlet_staff.name }}</h6>
+        </div>
+        <div class="receipt-sub-header">
+            <h6 style="padding: 2px; margin: 0; word-spacing: -2px;">Payment mode : {{ receipt.paymentT.payment_option }}</h6>
+        </div>
+        <hr style="border-top: 1px solid;">
+        <div class="receipt-item" style="font-weight: bold;">
+            <table class="table">
+                <thead class="text-center">
+                    <tr>
+                        
+                        <th scope="col" style="width: 60%;">item(s)</th>
+                        
+                        <th scope="col" style="width: 40%;">total</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    {% for product in receipt.products.all %}
+                    <tr>
+                    
+                        <td style="vertical-align: middle; padding-top: 1px;">{{ product.product }} X {{ product.Quantity }}</td>
+                        
+                        <td style="vertical-align: middle; padding-top: 1px;">{{ product.price }}</td>
+                    </tr>
+		
+                    {% endfor %}
+		
+                </tbody>
+            </table>
+            <hr style="border-top: 1px solid;">
+        </div>
+        <div class="receipt-item">
+            <h6 style="margin: 0; padding: 3px;">Total Amount: {{ receipt.get_total_amount_onR }}</h6>
+        </div>
+        <div class="receipt-item">
+            <h6 style="margin: 0; padding: 3px;">Amount Tendered: {{ receipt.paymentT.Amount_tenderd }}</h6>
+        </div>
+        <div class="receipt-item">
+            <h6 style="margin: 0; padding: 3px;">Change Due: {{ receipt.paymentT.balance }}</h6>
+        </div><br>
+        <hr style="border-top: 1px solid;">
+        <div class="receipt-item">
+            <center><h6 style="margin: 0; padding: 3px;">Thank you for your patronage!</h6></center>
+        </div>
+	{% if receipt.Remarks %}
+	 <div class="receipt-item">
+            <center><h6 style="margin: 0; padding: 3px;">{{receipt.Remarks}}</h6></center><br><br>
+        </div>
+	{% endif %}
+	<hr>
+    </div>
 </div>
 </body>
 </html>

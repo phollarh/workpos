@@ -193,17 +193,18 @@
                                                 
                                                 </div>
                                             </div>
-                                            <hr>
+                                            <hr><br><br><br>
+
+
+                                            
                                             {% endfor %}
                                             
                                             <br><br><br><br><br>
                                             <div class="card-body d-flex align-items-center    justify-content-between">
                                                  <h6>Total</h6> <h6>{{Receipt.get_total_amount_onR}} </h6>
                                             </div>
-                                            <div class="card-body">
-                                                 
-
-                                            </div>
+                                            
+                                                                                     <br>
                                             <div class="card-footer">
                                                 <center>
                                                 <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -302,6 +303,7 @@
 	        let productId = $(this).data('index');
 	        let receiptId = $(this).data('receipt-id');
 	        let receiptQty = $('#qty_' + productId).val();
+            let receiptRemarks = $("#remarks_receipt").val();
 	    
 	        $.ajax({
 	            type: 'POST',
@@ -310,11 +312,13 @@
 	                receipt_id: receiptId, // Change to receipt_id
 	                product_id: productId,
 	                receipt_Qty: receiptQty,
+                    receipt_remarks:receiptRemarks,
 	                csrfmiddlewaretoken: '{{csrf_token }}',
 	                action: 'post'
 	            },
 	            success: function(json) {
-	                location.reload();
+	                
+                    location.reload();
 	            },
 	            error: function(xhr, errmsg, err) {
 	                

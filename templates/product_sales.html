@@ -41,6 +41,46 @@
                                             <br><br>
                                             <hr class="bg-danger border-warning">
 
+                                            <div class="row">
+                            
+                                                <div class="col-xl-3 col-md-6">
+                                                    <div class="card bg-primary text-white mb-4">
+                                                        <div class="card-body"><center><h2>{{total_priceIna_forday}}</h2> <small class="muted-text">Gross Sales</small></center></div>
+                                                        <div class="card-footer d-flex align-items-center justify-content-between">
+                                                        
+                                                            <div class="small text-white"><i> {{start_date}} to {{end_date}}</i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xl-3 col-md-6">
+                                                    <div class="card bg-warning text-white mb-4">
+                                                        <div class="card-body"><center><h2>{{total_priceIna_forday}}</h2> <small class="muted-text">Net Sales</small></center></div>
+                                                        <div class="card-footer d-flex align-items-center justify-content-between">
+                                                            
+                                                            <div class="small text-white"><i >{{start_date}} to {{end_date}}</i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xl-3 col-md-6">
+                                                    <div class="card bg-danger text-white mb-4">
+                                                        <div class="card-body"><center><h2>{{total_priceIna_fordayCost}}</h2> <small class="muted-text">Gross Costs</small></center></div>
+                                                        <div class="card-footer d-flex align-items-center justify-content-between">
+                                                            
+                                                            <div class="small text-white"><i>{{start_date}} to {{end_date}}</i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xl-3 col-md-6">
+                                                    <div class="card bg-success text-white mb-4">
+                                                        <div class="card-body"><center><h2>{{Profit}}</h2> <small class="muted-text">Gross Profit</small></center></div>
+                                                        <div class="card-footer d-flex align-items-center justify-content-between">
+                                                
+                                                            <div class="small text-white"><i>{{start_date}} to {{end_date}}</i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                             
                             
                         </div>
@@ -81,7 +121,9 @@
                                                         </td>
                                                         <td style="vertical-align: middle; padding-top: 10px;">
                                                             <a style="text-decoration:none;" href="{% url 'product_sales' product.pk %}">
+                                                                {% if product.category %}
                                                                 <i><h6>{{ product.category }}</h6></i>
+                                                                {% endif %}
                                                             </a>
                                                         </td>
                                                         <td style="vertical-align: middle; padding-top: 10px;">
