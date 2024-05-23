@@ -140,6 +140,9 @@ class ProductListsView(LoginRequiredMixin,ListView):
 @email_verified_required
 @login_required
 def ProductCreatView(request, pk):
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	form=ProductForm(request.POST, user=request.user)
 	productList=ProductList.objects.filter(user__id=pk)
 	if request.user.id==pk:
@@ -163,9 +166,25 @@ def ProductCreatView(request, pk):
 
 			}
 		return render (request, 'create_product.html',context)
+
+def password_very(request):
+    if request.method == 'POST' and request.POST.get('action') == 'post':
+        password = request.POST.get('password')
+        if request.user.check_password(password):
+            # Set session flag
+            request.session['password_prompt_flag'] = True
+            return JsonResponse({'valid': True})
+        else:
+            return JsonResponse({'error': 'Incorrect password.'}, status=403)
+    return JsonResponse({'error': 'Invalid request method or missing action'}, status=400)
+
+
 @login_required
 @email_verified_required
 def ProductUpdateView(request, pk):
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	productList = get_object_or_404(ProductList, pk=pk)
 	if productList.user.id == request.user.id:
 
@@ -194,6 +213,9 @@ class DeleteProductView(DeleteView):
 @login_required
 @email_verified_required
 def MeasurementUpdateView(request, pk):
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	measurement = get_object_or_404(Measurement, pk=pk)
 	if measurement.user.id == request.user.id:
 
@@ -213,10 +235,15 @@ def MeasurementUpdateView(request, pk):
 	else:
 		return render(request, '401.html')
 
+
 @login_required
 @email_verified_required
 def MeasurementCreatView(request, pk):
-	form=MeasurementForm(request.POST)
+	
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
+	form=MeasurementForm
 	measurement=Measurement.objects.filter(user__id=pk)
 	if request.user.id==pk:
 
@@ -226,18 +253,19 @@ def MeasurementCreatView(request, pk):
 				form_create=form.save(commit=False)
 				form_create.user=request.user
 				form_create.save()
+				
 				messages.success(request, ('Measurement added successfully...'))
 				return redirect(request.META.get("HTTP_REFERER"))
 
 
 		context={
-				'form':form,
-				'measurement':measurement,
-
-			}
+					'form':form,
+					'measurement':measurement,
+				}
+		
 		return render (request, 'create_measurement.html',context)
 	else:
-		return render (request, '404.html')
+		return render (request, '404.html')			
 #class DeleteMeasurementView(DeleteView):
  #   model = Measurement
   #  template_name = 'delete_product.html'
@@ -245,21 +273,26 @@ def MeasurementCreatView(request, pk):
 @login_required
 @email_verified_required
 def DeleteMeasurementView(request, pk):
-    measurement = get_object_or_404(Measurement, pk=pk)
-    user=request.user
-    if measurement.user.id == user.id:
-    	if request.method == 'POST':
-    		measurement.delete()
-    		messages.success(request, 'measurement deleted successfully.')
-    		return redirect('create_measure', user.pk)  # Redirect to the post list or any other desired URL
-    	return render(request, 'delete_measurement.html', {'measurement': measurement})
-    else:
-    	return render(request, '404.html')
-
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
+	measurement = get_object_or_404(Measurement, pk=pk)
+	user=request.user
+	if measurement.user.id == user.id:
+		if request.method == 'POST':
+			measurement.delete()
+			messages.success(request, 'measurement deleted successfully.')
+			return redirect('create_measure', user.pk)  # Redirect to the post list or any other desired URL
+		return render(request, 'delete_measurement.html', {'measurement': measurement})
+	else:
+		return render(request, '404.html')
 
 @login_required
 @email_verified_required
 def CategoryCreatView(request, pk):
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 
 	form=CategoryForm(request.POST)
 	category=Category.objects.filter(user__id=pk)
@@ -280,7 +313,7 @@ def CategoryCreatView(request, pk):
 							'form':form,
 							'category':category,
 
-					}
+						}
 			return render (request, 'create_category.html',context)
 		else:
 			return render (request, '404.html')
@@ -299,16 +332,19 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
 @login_required
 @email_verified_required
 def CategoryDeleteView(request, pk):
-    category = get_object_or_404(Category, pk=pk)
-    user=request.user
-    if category.user.id == user.id:
-    	if request.method == 'POST':
-    		category.delete()
-    		messages.success(request, 'category deleted successfully.')
-    		return redirect('create_category' ,user.pk)  
-    	return render(request, 'delete_category.html', {'category': category})
-    else:
-    	return render(request, '404.html')
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
+	category = get_object_or_404(Category, pk=pk)
+	user=request.user
+	if category.user.id == user.id:
+		if request.method == 'POST':
+			category.delete()
+			messages.success(request, 'category deleted successfully.')
+			return redirect('create_category' ,user.pk)  
+		return render(request, 'delete_category.html', {'category': category})
+	else:
+		return render(request, '404.html')
 
 
 
@@ -487,6 +523,7 @@ def CreateReceiptVUpdate(request, pk):
 		return render(request, 'create_receiptUpdateV.html', context )
 	else:
 		return render(request, '401.html')
+
 @login_required
 @email_verified_required
 def Change_Qreceipt(request):
@@ -495,12 +532,14 @@ def Change_Qreceipt(request):
 			receipt_id = int(request.POST.get('receipt_id'))
 			product_id = request.POST.get('product_id')
 			receipt_qty = Decimal(request.POST.get('receipt_Qty'))
-			
+			#receipt_remarks=str(request.POST.get('receipt_remarks'))
           
 
 
 			sale_receipt = SalesReceipt.objects.get(id=receipt_id, issued=False)
-			
+			# sale_receipt.Remarks=str(receipt_remarks)           
+			# sale_receipt.save()
+			# print(sale_receipt.Remarks)
 			for product in sale_receipt.products.all():
 				if str(product.id) == str(product_id):
 					product.Quantity = receipt_qty
@@ -512,6 +551,8 @@ def Change_Qreceipt(request):
 			return JsonResponse({'error': 'Invalid data or receipt not found'})
 	else:
 		return JsonResponse({'error': 'Invalid request method or missing action'})
+
+
 # def Change_Qreceipt(request):
 # 	if request.method == 'POST' and request.POST.get('action') == 'post':
 # 	#if request.POST.get('action') == 'post' :
@@ -567,6 +608,10 @@ def SalesReceiptView(request, pk):
 					creatorpay.save()
 					Receipt.paymentT=creatorpay
 					Receipt.issued=True
+
+					# receipt_remarks=request.POST.get('remarks')
+					# print(receipt_remarks)
+					# Receipt.Remarks=str(receipt_remarks)
 					#products.paid=True
 					for product in products:
 						product.paid=True
@@ -639,7 +684,9 @@ def AmountTenderdView(request, pk):
 @login_required
 @email_verified_required
 def AddPayment(request, pk):
-
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	Receipt=get_object_or_404(SalesReceipt, pk=pk, issued=False)
 
 	payment=Payment(
@@ -762,6 +809,7 @@ def PastReceiptSucess(request, pk):
 
 		return render(request, '404.html')
 
+
 		
 @login_required
 @email_verified_required
@@ -787,6 +835,8 @@ def SalesRcListsDel(request):
     	
 	else:
 		return render(request, '404.html')
+
+    
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(email_verified_required, name='dispatch')
@@ -918,7 +968,9 @@ class SalesRcListsView(LoginRequiredMixin,View):
 @login_required
 @email_verified_required
 def SalesView(request):
-
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	start_date_str = request.GET.get('start_date')
 	end_date_str = request.GET.get('end_date')
 
@@ -1012,11 +1064,12 @@ def SalesView(request):
 		}
 
 	return render(request, 'product_sales.html', context)
-
 @login_required
 @email_verified_required
 def SalesView_byProduct(request, pk):
-
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	start_date_str = request.GET.get('start_date')
 	end_date_str = request.GET.get('end_date')
 
@@ -1314,16 +1367,20 @@ from django.template.loader import render_to_string
 
 
 def generate_sales_receipt_text(request, pk):
-	receipt = get_object_or_404(SalesReceipt, pk=pk, issued=True)
+
+	receipt = get_object_or_404(SalesReceipt, pk=pk, issued=True, user=request.user)
+	
 	outlet=get_object_or_404(Outlets, user=request.user)
 	attending_staff=get_object_or_404(OutletStaffLogin, user=request.user)
+
 	html_content = render_to_string('receipt_text.html', {'receipt': receipt, 'outlet':outlet, 'attending_staff':attending_staff})
 
-    
+	
 	response = HttpResponse(content_type='text/html')
 	response.write(html_content)
 
 	return response
+	
 
 
 
@@ -1343,9 +1400,3 @@ def sales_chart(request):
 
 		
 		
-
-	
-
-
-
-	

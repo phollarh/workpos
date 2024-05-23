@@ -40,6 +40,7 @@ urlpatterns = [
     path('generate_sales_receipt/<int:pk>/', generate_sales_receipt_pdf, name='generate_sales_receipt'),
     path('generate_sales_receipt_txt/<int:pk>/', views.generate_sales_receipt_text, name='generate_sales_receipt_txt'),
     path('sales_chart/', views.sales_chart, name='sales_chart'),
+    path('verify_password/', views.password_very, name='verify_password')
 
     
 

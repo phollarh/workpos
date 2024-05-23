@@ -21,6 +21,7 @@ from .decorators import email_verified_required
 from django.views.generic import View, ListView,CreateView,DetailView,UpdateView,View,DeleteView
 from django.http import JsonResponse
 import json
+from firstpos.views import password_very
 
 
 
@@ -194,7 +195,9 @@ def logout_user(request):
 @login_required
 @email_verified_required
 def Update_profile_picture(request, pk):
-
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 
 	profile=get_object_or_404(Profile, pk=pk)
 
@@ -223,7 +226,9 @@ def Update_profile_picture(request, pk):
 @login_required
 @email_verified_required
 def Update_ViewProfile(request, pk):
-
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 
 	user=get_object_or_404(CustomUser, pk=pk)
 
@@ -253,10 +258,10 @@ def Update_ViewProfile(request, pk):
 #class Settings_Page(ListView):
 #	template_name= 'settings_page.html'
 #	model = Outlets
-
 @login_required
 @email_verified_required
 def Settings_Page(request):
+
 	try:
 
 		staff_login = OutletStaffLogin.objects.get(user=request.user) 
@@ -289,6 +294,7 @@ def Settings_Page(request):
 @login_required
 @email_verified_required
 def Settings_PageD(request):
+	
 	outlet=Outlets.objects.filter(user=request.user)
 
 	
@@ -321,6 +327,9 @@ def OutletStaffListsView(request):
 @login_required
 @email_verified_required
 def OutletStaffUpdateView(request, pk):
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	outlet = get_object_or_404(OutletStaff, pk=pk)
 	if outlet.user.id == request.user.id:
 
@@ -343,7 +352,9 @@ def OutletStaffUpdateView(request, pk):
 @email_verified_required
 @login_required
 def AddOutletStaff(request):
-	
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	outlet=OutletStaff.objects.filter(user=request.user)
 
 
@@ -373,6 +384,9 @@ def AddOutletStaff(request):
 @login_required
 @email_verified_required
 def DeleteOutletStaffView(request, pk):
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	outlet_staff = get_object_or_404(OutletStaff, pk=pk)
 	outlet_staff1=get_object_or_404(OutletStaffLogin, user=request.user)
 	print(outlet_staff1.outlet_staff.id)
@@ -415,6 +429,9 @@ def OutletStaffLogout(request, pk):
 @login_required
 @email_verified_required
 def Settings_PageD_Update(request, pk):
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	outlet=get_object_or_404(Outlets, pk=pk)
 	form=UserUpdateSettingsForm(request.POST or None, request.FILES or None, instance=outlet)
 	if outlet.user.id == request.user.id:
@@ -459,7 +476,9 @@ def change_outlet_logo(request, pk):
 @login_required
 @email_verified_required
 def OutletCreatView(request):
-	
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	outlet=Outlets.objects.filter(user=request.user)
 	
 	form=OutletForm(request.POST or None, request.FILES or None)
@@ -492,23 +511,29 @@ def OutletCreatView(request):
 @login_required
 @email_verified_required
 def DeleteOutlettView(request, pk):
-    outlet = get_object_or_404(Outlets, pk=pk)
-    user=request.user
-    if outlet.user.id == user.id:
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
+	outlet = get_object_or_404(Outlets, pk=pk)
+	user=request.user
+	if outlet.user.id == user.id:
     
-    	outlet_de=outlet.delete()
+		outlet_de=outlet.delete()
 
-    	messages.success(request, 'Outlet deleted successfully.')
-    	return redirect('settings_paged')
+		messages.success(request, 'Outlet deleted successfully.')
+		return redirect('settings_paged')
     	#return redirect(request.META.get("HTTP_REFERER"))
     #return render(request, 'delete_measurement.html', {'measurement': measurement})
-    else:
-    	return render(request, '404.html')
+	else:
+		return render(request, '404.html')
 
 
 @login_required
 @email_verified_required
 def password_change(request):
+	if not request.session.get('password_prompt_flag', False):
+		return render(request, 'password_prompt.html')
+	del request.session['password_prompt_flag']
 	user=get_user_model()
 	user = request.user
 	if request.method == 'POST':

@@ -22,15 +22,15 @@
         }
         .receipt-header{
             font-size: 17px;
-            line-height: 2.2;
+            line-height: 1.5;
         }
 	.receipt-sub-header{
             font-size: 18px;
-            line-height: 2.1;
+            line-height: 1.5;
         }
         .receipt-item {
             font-size: 18px;
-		 line-height: 2.1;
+		 line-height: 1.5;
              
            
         
@@ -87,21 +87,21 @@
             <hr style="border-top: 1px solid;">
         </div>
         <div class="receipt-item">
-            <h6 style="margin: 0; padding: 3px;">Total Amount: {{ receipt.get_total_amount_onR }}</h6>
+            <h6 style="margin: 0; padding: 2px;">Total Amount: {{ receipt.get_total_amount_onR }}</h6>
         </div>
         <div class="receipt-item">
-            <h6 style="margin: 0; padding: 3px;">Amount Tendered: {{ receipt.paymentT.Amount_tenderd }}</h6>
+            <h6 style="margin: 0; padding: 2px;">Amount Tendered: {{ receipt.paymentT.Amount_tenderd }}</h6>
         </div>
         <div class="receipt-item">
-            <h6 style="margin: 0; padding: 3px;">Change Due: {{ receipt.paymentT.balance }}</h6>
+            <h6 style="margin: 0; padding: 2px;">Change Due: {{ receipt.paymentT.balance }}</h6>
         </div><br>
         <hr style="border-top: 1px solid;">
         <div class="receipt-item">
-            <center><h6 style="margin: 0; padding: 3px;">Thank you for your patronage!</h6></center>
+            <center><h6 style="margin: 0; padding: 2px;">Thank you for your patronage!</h6></center>
         </div>
 	{% if receipt.Remarks %}
 	 <div class="receipt-item">
-            <center><h6 style="margin: 0; padding: 3px;">{{receipt.Remarks}}</h6></center><br><br>
+            <center><h6 style="margin: 0; padding: 2px;">{{receipt.Remarks}}</h6></center><br><br>
         </div>
 	{% endif %}
 	<hr>
